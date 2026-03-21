@@ -16,7 +16,7 @@ export default function ServicesSection() {
     if (!sectionRef.current) return;
 
     const ctx = gsap.context(() => {
-      // Animate cards on scroll
+      // Animate the cards on scroll
       cardsRef.current.forEach((card, index) => {
         if (!card) return;
 
