@@ -60,11 +60,11 @@ export default function ServicesSection() {
         {/* Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => (
-            <Link 
-              href={`/services/${service.id}`}
-              key={service.title}
-              className="block"
-            >
+            // <Link 
+            //   href={`/services/${service.id}`}
+            //   key={service.title}
+            //   className="block"
+            // >
               <div
                 ref={(el) => {cardsRef.current[index] = el}}
                 className="card group cursor-pointer h-full hover:-translate-y-2 transition-transform duration-300"
@@ -83,14 +83,14 @@ export default function ServicesSection() {
                 </p>
 
                 {/* Hover Arrow */}
-                <div className="mt-auto flex items-center text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                {/* <div className="mt-auto flex items-center text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity">
                   Learn More
                   <svg className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
-                </div>
+                </div> */}
               </div>
-            </Link>
+            {/* </Link> */}
           ))}
         </div>
       </div>
