@@ -9,49 +9,28 @@ gsap.registerPlugin(ScrollTrigger);
 const projects = [
   {
     id: 1,
-    title: 'E-Commerce Platform',
+    title: 'easymoto.com.np',
     category: 'websites',
-    description: 'Full-stack e-commerce solution with payment integration',
-    image: '🛍️',
+    description: 'E-commerce platform for automotive accessories',
+    image: '🏍️',
   },
   {
     id: 2,
-    title: 'Mobile Banking App',
-    category: 'apps',
-    description: 'Secure mobile banking application for iOS and Android',
-    image: '💳',
+    title: 'amicus.com.np',
+    category: 'websites',
+    description: 'Professional corporate website solution',
+    image: '🏢',
   },
   {
     id: 3,
-    title: 'Brand Identity Design',
-    category: 'branding',
-    description: 'Complete brand identity for tech startup',
-    image: '🎨',
-  },
-  {
-    id: 4,
-    title: 'Corporate Video',
-    category: 'videos',
-    description: 'Professional corporate video production',
-    image: '🎬',
-  },
-  {
-    id: 5,
-    title: 'Cloud Hosting Solution',
-    category: 'hosting',
-    description: 'Scalable cloud hosting infrastructure',
-    image: '☁️',
-  },
-  {
-    id: 6,
-    title: 'Social Media Campaign',
-    category: 'marketing',
-    description: 'Viral social media marketing campaign',
-    image: '📱',
+    title: 'aryalfarm.com.np',
+    category: 'websites',
+    description: 'Digital presence for modern agriculture',
+    image: '🌾',
   },
 ];
 
-const categories = ['all', 'websites', 'apps', 'branding', 'videos', 'hosting', 'marketing'];
+const categories = ['all', 'websites'];
 
 export default function ProjectsSection() {
   const [activeCategory, setActiveCategory] = useState('all');

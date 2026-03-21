@@ -8,7 +8,6 @@ gsap.registerPlugin(ScrollTrigger);
 
 
 
-import Link from 'next/link';
 import { services } from '@/data/services';
 
 export default function ServicesSection() {
@@ -60,14 +59,10 @@ export default function ServicesSection() {
         {/* Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => (
-            <Link 
-              href={`/services/${service.id}`}
-              key={service.title}
-              className="block"
-            >
               <div
+                key={service.title}
                 ref={(el) => {cardsRef.current[index] = el}}
-                className="card group cursor-pointer h-full hover:-translate-y-2 transition-transform duration-300"
+                className="card group h-full hover:-translate-y-2 transition-transform duration-300"
               >
                 {/* Icon */}
                 <div className="w-16 h-16 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl flex items-center justify-center text-4xl mb-6 group-hover:scale-110 transition-transform duration-300">
@@ -78,19 +73,10 @@ export default function ServicesSection() {
                 <h3 className="text-xl font-bold text-gray-900 mb-3">
                   {service.title}
                 </h3>
-                <p className="text-gray-600 leading-relaxed mb-4">
+                <p className="text-gray-600 leading-relaxed text-sm lg:text-base">
                   {service.description}
                 </p>
-
-                {/* Hover Arrow */}
-                <div className="mt-auto flex items-center text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                  Learn More
-                  <svg className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </div>
               </div>
-            </Link>
           ))}
         </div>
       </div>
