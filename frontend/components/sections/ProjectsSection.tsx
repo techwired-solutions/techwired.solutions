@@ -9,24 +9,27 @@ gsap.registerPlugin(ScrollTrigger);
 const projects = [
   {
     id: 1,
-    title: 'easymoto.com.np',
+    title: 'easymoto rental service pvt ltd',
     category: 'websites',
-    description: 'E-commerce platform for automotive accessories',
+    description: 'A motorbike rental service platform where users can easily rent motorbikes.',
     image: '🏍️',
+    link: 'https://easymoto.com.np',
   },
   {
     id: 2,
-    title: 'amicus.com.np',
+    title: 'amicus institute of law pvt ltd',
     category: 'websites',
-    description: 'Professional corporate website solution',
+    description: 'A dedicated law institute providing top-tier legal education and resources.',
     image: '🏢',
+    link: 'https://amicus.com.np',
   },
   {
     id: 3,
-    title: 'aryalfarm.com.np',
+    title: 'aryal multipurpose agricultural farm pvt ltd',
     category: 'websites',
-    description: 'Digital presence for modern agriculture',
+    description: 'An agricultural farm focusing on premium dairy products.',
     image: '🌾',
+    link: 'https://aryalfarm.com.np',
   },
 ];
 
@@ -99,23 +102,36 @@ export default function ProjectsSection() {
         {/* Projects Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredProjects.map((project) => (
-            <div
+            <a
               key={project.id}
-              className="project-card card group cursor-pointer hover:border-[#0061ff]/30"
+              href={project.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="project-card card group cursor-pointer hover:border-[#0061ff]/30 block relative overflow-hidden"
             >
               <div className="text-6xl mb-6 text-center group-hover:scale-110 transition-transform duration-300">
                 {project.image}
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
+              <h3 className="text-xl font-bold text-gray-900 mb-3 capitalize">
                 {project.title}
               </h3>
-              <p className="text-gray-600 mb-4 leading-relaxed">
+              <p className="text-gray-600 mb-6 leading-relaxed">
                 {project.description}
               </p>
-              <div className="inline-block px-3 py-1 rounded-full bg-[#0061ff]/10 text-[#0061ff] text-xs capitalize font-semibold">
-                {project.category}
+              
+              {/* Bottom details */}
+              <div className="flex items-center justify-between mt-auto">
+                <div className="inline-block px-3 py-1 rounded-full bg-[#0061ff]/10 text-[#0061ff] text-xs capitalize font-semibold">
+                  {project.category}
+                </div>
+                <div className="text-[#0061ff] text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center">
+                  Visit Site
+                  <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </div>
               </div>
-            </div>
+            </a>
           ))}
         </div>
       </div>
