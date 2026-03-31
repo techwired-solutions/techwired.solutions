@@ -192,14 +192,14 @@ function Scene() {
       <ParticleField />
       
       {/* Environment */}
-      <fog attach="fog" args={['#FFFFFF', 8, 25]} />
+      <fog attach="fog" args={['#06060F', 8, 25]} />
     </>
   );
 }
 
 function HeroScene() {
   return (
-    <div className="w-full h-screen absolute top-0 left-0 -z-10 bg-gradient-to-b from-purple-50 to-white">
+    <div className="w-full h-screen absolute top-0 left-0 -z-10" style={{ background: '#06060F' }}>
       <Canvas shadows>
         <Suspense fallback={null}>
           <Scene />

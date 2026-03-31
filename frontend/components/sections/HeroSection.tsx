@@ -1,11 +1,10 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import SplitType from 'split-type';
+import dynamic from 'next/dynamic';
 
-gsap.registerPlugin(ScrollTrigger);
+// Restore 3D background scene
+const HeroScene = dynamic(() => import('../3d/HeroScene'), { ssr: false });
 
 const WORDS = ['Websites', 'Mobile Apps', 'Brands', 'Solutions', 'Experiences'];
 
@@ -17,119 +16,65 @@ const STATS = [
 ];
 
 export default function HeroSection() {
-  const heroRef    = useRef<HTMLElement>(null);
-  const titleRef   = useRef<HTMLHeadingElement>(null);
-  const ctaRef     = useRef<HTMLDivElement>(null);
-  const badgeRef   = useRef<HTMLDivElement>(null);
   const [wordIdx, setWordIdx] = useState(0);
+  const [mounted,  setMounted] = useState(false);
 
-  // Cycling word typewriter
   useEffect(() => {
+    setMounted(true);
     const id = setInterval(() => setWordIdx(i => (i + 1) % WORDS.length), 2500);
     return () => clearInterval(id);
   }, []);
 
-  useEffect(() => {
-    if (!heroRef.current || !titleRef.current) return;
-
-    const ctx = gsap.context(() => {
-      // Title character reveal
-      const split = new SplitType(titleRef.current!, { types: 'chars,words' });
-      gsap.from(split.chars, {
-        opacity: 0,
-        y: 60,
-        rotateX: -80,
-        stagger: 0.018,
-        duration: 0.9,
-        ease: 'back.out(1.7)',
-        delay: 0.2,
-      });
-
-      // Badge
-      gsap.from(badgeRef.current, {
-        opacity: 0, y: -20, scale: 0.8,
-        duration: 0.7, ease: 'back.out(2)', delay: 0.1,
-      });
-
-      // CTA buttons
-      gsap.from(ctaRef.current?.children ?? [], {
-        opacity: 0, y: 40, scale: 0.9,
-        stagger: 0.12, duration: 0.7,
-        ease: 'back.out(1.7)', delay: 0.9,
-      });
-
-      // Subtle parallax
-      gsap.to(heroRef.current, {
-        yPercent: 20,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1.5,
-        },
-      });
-    }, heroRef);
-
-    return () => ctx.revert();
-  }, []);
-
   return (
     <section
-      ref={heroRef}
       id="home"
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
-      style={{ background: 'linear-gradient(180deg, #0A0A0F 0%, #0D0D1A 100%)' }}
+      style={{ background: 'linear-gradient(180deg, #06060F 0%, #0D0D1A 100%)' }}
     >
-      {/* Dot grid background */}
-      <div className="absolute inset-0 dot-grid opacity-40 z-0" />
+      {/* ── 3D scene background ── */}
+      {mounted && (
+        <div className="absolute inset-0 z-0">
+          <HeroScene />
+        </div>
+      )}
 
-      {/* Ambient orbs */}
-      <div className="orb orb-blue absolute w-[700px] h-[700px] top-[-200px] left-[-200px] opacity-60" />
-      <div className="orb orb-purple absolute w-[500px] h-[500px] bottom-[-100px] right-[-100px] opacity-50" />
-      <div className="orb orb-cyan absolute w-[300px] h-[300px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-30" />
-
-      {/* Background noise layer */}
-      <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true" />
+      {/* dark gradient overlay so text stays readable */}
+      <div className="absolute inset-0 z-[1]"
+        style={{ background: 'linear-gradient(180deg, rgba(6,6,15,0.55) 0%, rgba(6,6,15,0.7) 100%)' }} />
 
       {/* Content */}
-      <div className="container relative z-10 text-center flex flex-col items-center gap-8 py-40">
+      <div className="relative z-10 text-center flex flex-col items-center gap-7 px-4 max-w-5xl mx-auto py-36">
 
         {/* Badge */}
-        <div
-          ref={badgeRef}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-300 text-sm font-semibold tracking-wide"
-        >
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-300 text-sm font-semibold tracking-wide">
           <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
           🇳🇵 Nepal&apos;s Premier Digital Agency
         </div>
 
-        {/* Main headline */}
+        {/* Headline — two words, NO SplitType so gradient stays intact */}
         <div>
-          <h1
-            ref={titleRef}
-            className="font-display font-black tracking-tighter text-white leading-none"
-            style={{ fontSize: 'clamp(3rem, 8vw, 7rem)' }}
-          >
+          <h1 className="font-display font-black tracking-tight leading-none"
+            style={{ fontSize: 'clamp(3.2rem, 9vw, 7.5rem)', lineHeight: 1.05 }}>
+            {/* "Techwired" in neon blue exactly as before */}
             <span
               style={{
-                background: 'linear-gradient(135deg, #3B82F6 0%, #00D4FF 50%, #A855F7 100%)',
+                background: 'linear-gradient(135deg, #3B82F6 0%, #00D4FF 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
+                display: 'block',
               }}
             >
               Techwired
             </span>
-            <br />
-            <span className="text-white">Solutions</span>
+            <span className="text-white" style={{ display: 'block' }}>Solutions</span>
           </h1>
         </div>
 
-        {/* Dynamic subtitle */}
-        <div className="flex flex-col sm:flex-row items-center gap-3 text-xl sm:text-2xl text-gray-400 font-medium" aria-live="polite">
+        {/* Cycling subtitle */}
+        <div className="flex flex-col sm:flex-row items-center gap-2 text-lg sm:text-2xl text-gray-300 font-medium" aria-live="polite">
           <span>Powering Your</span>
-          <div className="relative overflow-hidden h-9 w-48 sm:w-56" aria-label={WORDS[wordIdx]}>
+          <div className="relative overflow-hidden h-9 min-w-[170px]" aria-label={WORDS[wordIdx]}>
             {WORDS.map((word, i) => (
               <span
                 key={word}
@@ -151,19 +96,22 @@ export default function HeroSection() {
         </div>
 
         {/* Description */}
-        <p className="max-w-2xl text-lg text-gray-400 leading-relaxed">
-          From domain to deployment — we build stunning websites, mobile apps, and complete
-          digital identities that make your brand unforgettable.
+        <p className="max-w-xl text-base sm:text-lg text-gray-400 leading-relaxed">
+          From domain to deployment — websites, mobile apps, branding, and
+          everything digital to make your business stand out.
         </p>
 
         {/* CTA Buttons */}
-        <div
-          ref={ctaRef}
-          className="flex flex-col sm:flex-row gap-4 items-center justify-center w-full"
-        >
+        <div className="flex flex-col sm:flex-row gap-4 items-center">
           <a
             href="#contact"
-            className="btn btn-primary text-base px-8 py-4 inline-flex items-center gap-2"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-white text-base transition-all duration-300"
+            style={{
+              background: 'linear-gradient(135deg, #3B82F6, #2563EB)',
+              boxShadow: '0 0 28px rgba(59,130,246,0.5)',
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 0 48px rgba(59,130,246,0.75)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 0 28px rgba(59,130,246,0.5)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}
           >
             Start My Project
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -172,42 +120,37 @@ export default function HeroSection() {
           </a>
           <a
             href="#services"
-            className="btn btn-secondary text-base px-8 py-4"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-white text-base border border-white/20 bg-white/5 backdrop-blur-sm transition-all duration-300"
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(59,130,246,0.5)'; (e.currentTarget as HTMLElement).style.background = 'rgba(59,130,246,0.1)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.2)'; (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.05)'; }}
           >
             Explore Services
           </a>
         </div>
 
         {/* Stats strip */}
-        <div className="flex flex-wrap justify-center gap-x-10 gap-y-4 pt-8 border-t border-white/[0.08] w-full">
-          {STATS.map(stat => (
-            <div key={stat.label} className="text-center">
-              <div
-                className="text-2xl font-black font-display"
+        <div className="flex flex-wrap justify-center gap-x-10 gap-y-3 pt-6 border-t border-white/[0.08] w-full mt-2">
+          {STATS.map(s => (
+            <div key={s.label} className="text-center">
+              <div className="text-2xl font-black font-display"
                 style={{
                   background: 'linear-gradient(135deg, #3B82F6, #00D4FF)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                }}
-              >
-                {stat.num}
+                  WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+                }}>
+                {s.num}
               </div>
-              <div className="text-xs text-gray-500 uppercase tracking-widest mt-0.5">{stat.label}</div>
+              <div className="text-xs text-gray-500 uppercase tracking-widest">{s.label}</div>
             </div>
           ))}
         </div>
+
       </div>
 
       {/* Scroll indicator */}
-      <div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce z-10"
-        aria-label="Scroll down"
-        role="img"
-      >
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10" aria-label="Scroll down" role="img">
         <span className="text-xs text-gray-600 uppercase tracking-widest" aria-hidden="true">Scroll</span>
-        <div className="w-5 h-8 rounded-full border border-white/20 flex justify-center pt-1.5" aria-hidden="true">
-          <div className="w-1 h-2 bg-blue-400 rounded-full animate-pulse" />
+        <div className="w-5 h-8 rounded-full border border-white/20 flex justify-center pt-1.5 animate-bounce" aria-hidden="true">
+          <div className="w-1 h-2 bg-blue-400 rounded-full" />
         </div>
       </div>
     </section>
