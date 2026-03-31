@@ -9,6 +9,13 @@ gsap.registerPlugin(ScrollTrigger);
 
 const WORDS = ['Websites', 'Mobile Apps', 'Brands', 'Solutions', 'Experiences'];
 
+const STATS = [
+  { num: '50+',  label: 'Projects' },
+  { num: '30+',  label: 'Clients' },
+  { num: '5+',   label: 'Years' },
+  { num: '100%', label: 'Satisfaction' },
+];
+
 export default function HeroSection() {
   const heroRef    = useRef<HTMLElement>(null);
   const titleRef   = useRef<HTMLHeadingElement>(null);
@@ -82,10 +89,8 @@ export default function HeroSection() {
       <div className="orb orb-purple absolute w-[500px] h-[500px] bottom-[-100px] right-[-100px] opacity-50" />
       <div className="orb orb-cyan absolute w-[300px] h-[300px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-30" />
 
-      {/* 3D canvas (behind) */}
-      <div className="absolute inset-0 z-0" style={{ pointerEvents: 'none' }}>
-        {/* HeroScene rendered behind content */}
-      </div>
+      {/* Background noise layer */}
+      <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true" />
 
       {/* Content */}
       <div className="container relative z-10 text-center flex flex-col items-center gap-8 py-40">
@@ -122,12 +127,13 @@ export default function HeroSection() {
         </div>
 
         {/* Dynamic subtitle */}
-        <div className="flex flex-col sm:flex-row items-center gap-3 text-xl sm:text-2xl text-gray-400 font-medium">
+        <div className="flex flex-col sm:flex-row items-center gap-3 text-xl sm:text-2xl text-gray-400 font-medium" aria-live="polite">
           <span>Powering Your</span>
-          <div className="relative overflow-hidden h-9 w-48 sm:w-56">
+          <div className="relative overflow-hidden h-9 w-48 sm:w-56" aria-label={WORDS[wordIdx]}>
             {WORDS.map((word, i) => (
               <span
                 key={word}
+                aria-hidden={i !== wordIdx}
                 className="absolute inset-0 flex items-center justify-center font-bold transition-all duration-500"
                 style={{
                   background: 'linear-gradient(135deg, #3B82F6, #A855F7)',
@@ -173,13 +179,8 @@ export default function HeroSection() {
         </div>
 
         {/* Stats strip */}
-        <div className="flex flex-wrap justify-center gap-x-10 gap-y-4 pt-8 border-t border-white/8 w-full">
-          {[
-            { num: '50+', label: 'Projects' },
-            { num: '30+', label: 'Clients' },
-            { num: '5+',  label: 'Years' },
-            { num: '100%', label: 'Satisfaction' },
-          ].map(stat => (
+        <div className="flex flex-wrap justify-center gap-x-10 gap-y-4 pt-8 border-t border-white/[0.08] w-full">
+          {STATS.map(stat => (
             <div key={stat.label} className="text-center">
               <div
                 className="text-2xl font-black font-display"
@@ -199,9 +200,13 @@ export default function HeroSection() {
       </div>
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce z-10">
-        <span className="text-xs text-gray-600 uppercase tracking-widest">Scroll</span>
-        <div className="w-5 h-8 rounded-full border border-white/20 flex justify-center pt-1.5">
+      <div
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce z-10"
+        aria-label="Scroll down"
+        role="img"
+      >
+        <span className="text-xs text-gray-600 uppercase tracking-widest" aria-hidden="true">Scroll</span>
+        <div className="w-5 h-8 rounded-full border border-white/20 flex justify-center pt-1.5" aria-hidden="true">
           <div className="w-1 h-2 bg-blue-400 rounded-full animate-pulse" />
         </div>
       </div>

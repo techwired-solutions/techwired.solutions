@@ -125,7 +125,8 @@ export default function ContactForm() {
       setSubmitStatus('success');
       reset();
       setTimeout(() => setSubmitStatus('idle'), 5000);
-    } catch {
+    } catch (err) {
+      console.error('Form submission error:', err);
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);

@@ -90,10 +90,9 @@ export default function Footer() {
                 <div className="relative w-8 h-8 flex-shrink-0 rounded-full overflow-hidden bg-white/5">
                   <Image
                     src={partner.logo}
-                    alt={partner.name}
+                    alt={`${partner.name} logo`}
                     fill
                     className="object-contain p-1 grayscale group-hover:grayscale-0 transition-all duration-300"
-                    onError={() => {}}
                   />
                 </div>
                 <span className="text-gray-500 group-hover:text-gray-200 text-sm font-semibold transition-colors duration-200">
@@ -213,10 +212,7 @@ export default function Footer() {
         </motion.div>
 
         {/* Bottom bar */}
-        <div
-          className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8"
-          style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
-        >
+          <div className="pt-8 border-t border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-gray-600 text-sm">
             © 2026 Techwired Solutions — Built with ❤️ in Nepal
             <span className="ml-2 text-gray-700">|</span>

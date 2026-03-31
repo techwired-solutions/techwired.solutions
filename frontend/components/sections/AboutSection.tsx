@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -139,11 +140,12 @@ export default function AboutSection() {
               {/* Rings */}
               <div className="absolute inset-0 rounded-full border border-blue-500/20 animate-spin-slow" style={{ transform: 'scale(1.3)' }} />
               <div className="absolute inset-0 rounded-full border border-purple-500/15 animate-spin-slow" style={{ transform: 'scale(1.55)', animationDirection: 'reverse', animationDuration: '30s' }} />
-              {/* Logo */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-52 h-52 rounded-full flex items-center justify-center"
                   style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                  <img src="/images/logo.png" alt="Techwired" className="w-36 h-36 object-contain" />
+                  <div className="relative w-36 h-36">
+                    <Image src="/images/logo.png" alt="Techwired Solutions logo" fill className="object-contain" />
+                  </div>
                 </div>
               </div>
               {/* Floating chips */}
@@ -216,12 +218,13 @@ export default function AboutSection() {
             <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-blue-500/0 via-blue-500/50 to-blue-500/0" />
             <div className="space-y-8 md:space-y-0">
               {milestones.map((m, i) => (
-                <div key={m.year}
-                  className={`milestone-item relative grid grid-cols-1 md:grid-cols-[1fr,auto,1fr] gap-4 md:gap-8 items-center mb-8 ${i % 2 === 0 ? '' : 'md:[&>*:first-child]:order-3 md:[&>*:last-child]:order-1'}`}
+                <div
+                  key={m.year}
+                  className="milestone-item relative grid grid-cols-1 md:grid-cols-[1fr,auto,1fr] gap-4 md:gap-8 items-center mb-8"
                 >
                   {i % 2 === 0 ? (
                     <>
-                      <div className="glass-card p-6 rounded-2xl border border-white/8 hover:border-blue-500/30 transition-colors">
+                      <div className="glass-card p-6 rounded-2xl border border-white/[0.08] hover:border-blue-500/30 transition-colors">
                         <div className="text-blue-400 text-sm font-bold mb-2">{m.year}</div>
                         <h4 className="text-white font-bold text-lg mb-2">{m.title}</h4>
                         <p className="text-gray-400 text-sm leading-relaxed">{m.desc}</p>

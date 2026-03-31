@@ -17,7 +17,6 @@ export default function Navbar() {
   const [isScrolled,        setIsScrolled]        = useState(false);
   const [isMobileMenuOpen,  setIsMobileMenuOpen]  = useState(false);
   const [isMounted,         setIsMounted]         = useState(false);
-  const [activeLink,        setActiveLink]        = useState('home');
 
   useEffect(() => {
     setIsMounted(true);
@@ -102,7 +101,7 @@ export default function Navbar() {
               <Link
                 key={link.name}
                 href={link.href}
-                onClick={() => setActiveLink(link.name.toLowerCase())}
+                onClick={() => setIsMobileMenuOpen(false)}
                 className="relative px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200 rounded-full hover:bg-white/5 group"
               >
                 {link.name}
