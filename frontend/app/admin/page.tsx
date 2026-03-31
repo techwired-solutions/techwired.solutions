@@ -17,7 +17,7 @@ export default function AdminLogin() {
     e.preventDefault();
     setError('');
     setIsLoading(true);
-
+    
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
       const response = await axios.post(`${apiUrl}/api/auth/login`, {
