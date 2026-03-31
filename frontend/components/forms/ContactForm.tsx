@@ -6,14 +6,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import axios from 'axios';
 import { motion } from 'framer-motion';
-import Button from '../ui/Button';
 
 const contactSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Invalid email address'),
-  phone: z.string().optional(),
+  name:         z.string().min(2, 'Name must be at least 2 characters'),
+  email:        z.string().email('Invalid email address'),
+  phone:        z.string().optional(),
   service_type: z.string().min(1, 'Please select a service'),
-  budget: z.string().min(1, 'Please select a budget range'),
+  budget:       z.string().min(1, 'Please select a budget range'),
   requirements: z.string().min(50, 'Please provide at least 50 characters'),
 });
 
@@ -44,34 +43,89 @@ const budgetOptions = [
   'Custom Quote Required',
 ];
 
+/* ---------- reusable styled input ---------- */
+const inputClass =
+  'w-full px-4 py-3.5 rounded-xl text-white text-sm outline-none transition-all duration-200 placeholder-gray-600';
+const inputStyle = {
+  background: 'rgba(255,255,255,0.05)',
+  border: '1px solid rgba(255,255,255,0.1)',
+};
+const focusStyle = {
+  border: '1px solid #3B82F6',
+  background: 'rgba(59,130,246,0.06)',
+  boxShadow: '0 0 0 3px rgba(59,130,246,0.12)',
+};
+
+function DarkInput({
+  id, placeholder, type = 'text', registration, error,
+}: {
+  id: string; placeholder: string; type?: string;
+  registration: any; error?: { message?: string };
+}) {
+  const [focused, setFocused] = useState(false);
+  return (
+    <div>
+      <input
+        {...registration}
+        id={id}
+        type={type}
+        placeholder={placeholder}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        className={inputClass}
+        style={focused ? focusStyle : inputStyle}
+      />
+      {error && <p className="mt-1.5 text-red-400 text-xs">{error.message}</p>}
+    </div>
+  );
+}
+
+function DarkSelect({
+  id, placeholder, options, registration, error,
+}: {
+  id: string; placeholder: string; options: string[];
+  registration: any; error?: { message?: string };
+}) {
+  const [focused, setFocused] = useState(false);
+  return (
+    <div className="relative">
+      <select
+        {...registration}
+        id={id}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        className={`${inputClass} appearance-none cursor-pointer`}
+        style={focused ? { ...focusStyle, color: '#F1F5F9' } : { ...inputStyle, color: '#94A3B8' }}
+      >
+        <option value="" style={{ background: '#0F0F1A', color: '#94A3B8' }}>{placeholder}</option>
+        {options.map(opt => (
+          <option key={opt} value={opt} style={{ background: '#0F0F1A', color: '#F1F5F9' }}>{opt}</option>
+        ))}
+      </select>
+      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500 text-xs">▼</div>
+      {error && <p className="mt-1.5 text-red-400 text-xs">{error.message}</p>}
+    </div>
+  );
+}
 
 export default function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<ContactFormData>({
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
   });
 
   const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true);
     setSubmitStatus('idle');
-
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
       await axios.post(`${apiUrl}/api/inquiry`, data);
-      
       setSubmitStatus('success');
       reset();
-      
       setTimeout(() => setSubmitStatus('idle'), 5000);
-    } catch (error) {
-      console.error('Form submission error:', error);
+    } catch {
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
@@ -79,161 +133,122 @@ export default function ContactForm() {
   };
 
   return (
-  
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="space-y-12 px-4 md:px-8 py-6"
-      >
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <div>
+        <h3 className="text-white font-bold text-xl mb-1">Send Us a Message</h3>
+        <p className="text-gray-500 text-sm">Fill in the form below and we&apos;ll be in touch.</p>
+      </div>
 
-      {/* Messages */}
+      {/* Status messages */}
       {submitStatus === 'success' && (
         <motion.div
-          className="bg-green-100 text-green-800 border-l-4 border-green-500 px-6 py-4 rounded-r-lg shadow-sm"
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex items-start gap-3 p-4 rounded-xl border border-green-500/30 bg-green-500/10"
         >
-          <div className="flex items-center gap-2 font-bold">
-             <span>✅</span> Message Received
+          <span className="text-green-400 text-lg">✅</span>
+          <div>
+            <div className="text-green-300 font-semibold text-sm">Message received!</div>
+            <p className="text-green-400/70 text-xs mt-0.5">We&apos;ll get back to you within 24 hours.</p>
           </div>
-          <p className="text-sm mt-1 opacity-90">We'll get back to you within 24-48 hours.</p>
         </motion.div>
       )}
-
       {submitStatus === 'error' && (
         <motion.div
-            className="bg-red-100 text-red-800 border-l-4 border-red-500 px-6 py-4 rounded-r-lg shadow-sm"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex items-start gap-3 p-4 rounded-xl border border-red-500/30 bg-red-500/10"
         >
-            <div className="flex items-center gap-2 font-bold">
-               <span>❌</span> Error
-            </div>
-            <p className="text-sm mt-1 opacity-90">Something went wrong. Please try again.</p>
+          <span className="text-red-400">❌</span>
+          <div>
+            <div className="text-red-300 font-semibold text-sm">Something went wrong</div>
+            <p className="text-red-400/70 text-xs mt-0.5">Please try again or email us directly.</p>
+          </div>
         </motion.div>
       )}
 
-      {/* Group 1: Your Information */}
-      <div className="space-y-8">
-        <h3 className="text-sm font-semibold text-gray-400  tracking-wider border-b border-gray-300 pb-3">
-            Your Information
-        </h3>
-        
-        <div className="grid md:grid-cols-2 gap-8">
-            <div className="space-y-3 group">
-                <label htmlFor="name" className="text-sm font-bold text-gray-700 group-hover:text-[#0061ff] transition-colors">
-                  Full Name *
-                </label>
-                <input
-                {...register('name')}
-                id="name"
-                className="w-full px-5 py-4 bg-white border border-gray-200 rounded-sm text-gray-900 focus:border-[#0061ff] focus:ring-4 focus:ring-[#0061ff]/10 transition-all shadow-sm group-hover:border-gray-300 outline-none"
-                placeholder="John Doe"
-                />
-                {errors.name && <p className="text-red-500 text-sm font-medium">{errors.name.message}</p>}
-            </div>
-
-            <div className="space-y-3 group">
-                <label htmlFor="phone" className="text-sm font-bold text-gray-700 group-hover:text-[#0061ff] transition-colors">
-                  Phone Number
-                </label>
-                <input
-                {...register('phone')}
-                id="phone"
-                className="w-full px-5 py-4 bg-white border border-gray-200 rounded-sm text-gray-900 focus:border-[#0061ff] focus:ring-4 focus:ring-[#0061ff]/10 transition-all shadow-sm group-hover:border-gray-300 outline-none"
-                placeholder="+977 98XXXXXXXX"
-                />
-            </div>
+      {/* Your Info */}
+      <div>
+        <div className="text-xs font-bold uppercase tracking-widest text-gray-600 mb-4 pb-2 border-b border-white/5">
+          Your Information
         </div>
-
-        <div className="space-y-3 group">
-            <label htmlFor="email" className="text-sm font-bold text-gray-700 group-hover:text-[#0061ff] transition-colors">
-              Email Address *
-            </label>
-            <input
-            {...register('email')}
-            id="email"
-            type="email"
-            className="w-full px-5 py-4 bg-white border border-gray-200 rounded-sm text-gray-900 focus:border-[#0061ff] focus:ring-4 focus:ring-[#0061ff]/10 transition-all shadow-sm group-hover:border-gray-300 outline-none"
-            placeholder="john@company.com"
-            />
-            {errors.email && <p className="text-red-500 text-sm font-medium">{errors.email.message}</p>}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="name" className="block text-xs font-semibold text-gray-400 mb-2">Full Name *</label>
+            <DarkInput id="name" placeholder="John Doe" registration={register('name')} error={errors.name} />
+          </div>
+          <div>
+            <label htmlFor="phone" className="block text-xs font-semibold text-gray-400 mb-2">Phone Number</label>
+            <DarkInput id="phone" placeholder="+977 98XXXXXXXX" registration={register('phone')} />
+          </div>
+        </div>
+        <div className="mt-4">
+          <label htmlFor="email" className="block text-xs font-semibold text-gray-400 mb-2">Email Address *</label>
+          <DarkInput id="email" type="email" placeholder="your@email.com" registration={register('email')} error={errors.email} />
         </div>
       </div>
-      <br />
-      {/* Group 2: Project Details */}
-      <div className="space-y-8">
-        <h3 className="text-sm font-semibold text-gray-400  tracking-wider border-b border-gray-300 pb-3">
-            Project Details
-        </h3>
 
-        <div className="grid md:grid-cols-2 gap-8">
-            <div className="space-y-3 group">
-                <label htmlFor="service_type" className="text-sm font-bold text-gray-700 group-hover:text-[#0061ff] transition-colors">
-                  I'm interested in... *
-                </label>
-                <div className="relative">
-                   <select
-                   {...register('service_type')}
-                   id="service_type"
-                   className="w-full px-5 py-4 bg-white border border-gray-200 rounded-sm text-gray-900 focus:border-[#0061ff] focus:ring-4 focus:ring-[#0061ff]/10 transition-all shadow-sm group-hover:border-gray-300 outline-none appearance-none cursor-pointer"
-                   >
-                   <option value="">Select Service</option>
-                   {serviceOptions.map((opt) => (
-                       <option key={opt} value={opt}>{opt}</option>
-                   ))}
-                   </select>
-                   <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">▼</div>
-                </div>
-                {errors.service_type && <p className="text-red-500 text-sm font-medium">{errors.service_type.message}</p>}
-            </div>
-
-            <div className="space-y-3 group">
-                <label htmlFor="budget" className="text-sm font-bold text-gray-700 group-hover:text-[#0061ff] transition-colors">
-                  Budget Range *
-                </label>
-                <div className="relative">
-                   <select
-                   {...register('budget')}
-                   id="budget"
-                   className="w-full px-5 py-4 bg-white border border-gray-200 rounded-sm text-gray-900 focus:border-[#0061ff] focus:ring-4 focus:ring-[#0061ff]/10 transition-all shadow-sm group-hover:border-gray-300 outline-none appearance-none cursor-pointer"
-                   >
-                   <option value="">Select Budget</option>
-                   {budgetOptions.map((opt) => (
-                       <option key={opt} value={opt}>{opt}</option>
-                   ))}
-                   </select>
-                   <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">▼</div>
-                </div>
-                {errors.budget && <p className="text-red-500 text-sm font-medium">{errors.budget.message}</p>}
-            </div>
+      {/* Project Details */}
+      <div>
+        <div className="text-xs font-bold uppercase tracking-widest text-gray-600 mb-4 pb-2 border-b border-white/5">
+          Project Details
         </div>
-
-        <div className="space-y-3 group">
-            <label htmlFor="requirements" className="text-sm font-bold text-gray-700 group-hover:text-[#0061ff] transition-colors">
-              Project Description *
-            </label>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label htmlFor="service_type" className="block text-xs font-semibold text-gray-400 mb-2">Service Needed *</label>
+            <DarkSelect id="service_type" placeholder="Select a service" options={serviceOptions} registration={register('service_type')} error={errors.service_type} />
+          </div>
+          <div>
+            <label htmlFor="budget" className="block text-xs font-semibold text-gray-400 mb-2">Budget Range *</label>
+            <DarkSelect id="budget" placeholder="Select budget" options={budgetOptions} registration={register('budget')} error={errors.budget} />
+          </div>
+        </div>
+        <div>
+          <label htmlFor="requirements" className="block text-xs font-semibold text-gray-400 mb-2">Project Description *</label>
+          <div className="relative">
             <textarea
-            {...register('requirements')}
-            id="requirements"
-            rows={5}
-            className="w-full px-5 py-4 bg-white border border-gray-200 rounded-sm text-gray-900 focus:border-[#0061ff] focus:ring-4 focus:ring-[#0061ff]/10 transition-all shadow-sm group-hover:border-gray-300 outline-none resize-none"
-            placeholder="Tell us about your goals, timeline, and any specific requirements..."
+              {...register('requirements')}
+              id="requirements"
+              rows={5}
+              placeholder="Tell us about your goals, timeline, and requirements... (min. 50 characters)"
+              className={`${inputClass} resize-none`}
+              style={inputStyle}
+              onFocus={e => Object.assign((e.target as HTMLElement).style, focusStyle)}
+              onBlur={e  => Object.assign((e.target as HTMLElement).style, inputStyle)}
             />
-            {errors.requirements && <p className="text-red-500 text-sm font-medium">{errors.requirements.message}</p>}
+          </div>
+          {errors.requirements && <p className="mt-1.5 text-red-400 text-xs">{errors.requirements.message}</p>}
         </div>
       </div>
 
-      <Button
+      {/* Submit */}
+      <button
         type="submit"
-        variant="primary"
-        size="lg"
         disabled={isSubmitting}
-        className="w-full py-5 text-lg font-bold shadow-lg shadow-[#0061ff]/20 hover:shadow-[#0061ff]/40 hover:-translate-y-1 transition-all"
+        className="w-full py-4 rounded-xl font-bold text-white transition-all duration-300 flex items-center justify-center gap-3 relative overflow-hidden"
+        style={{
+          background: isSubmitting
+            ? 'rgba(59,130,246,0.5)'
+            : 'linear-gradient(135deg, #3B82F6, #2563EB)',
+          boxShadow: isSubmitting ? 'none' : '0 0 30px rgba(59,130,246,0.4)',
+        }}
+        onMouseEnter={e => { if (!isSubmitting) (e.currentTarget as HTMLElement).style.boxShadow = '0 0 50px rgba(59,130,246,0.6)'; }}
+        onMouseLeave={e => { if (!isSubmitting) (e.currentTarget as HTMLElement).style.boxShadow = '0 0 30px rgba(59,130,246,0.4)'; }}
       >
-        {isSubmitting ? 'Sending Request...' : 'Send Message'}
-      </Button>
+        {isSubmitting ? (
+          <>
+            <div className="w-5 h-5 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+            Sending...
+          </>
+        ) : (
+          <>
+            Send Message
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </>
+        )}
+      </button>
     </form>
-  
   );
-  
 }
