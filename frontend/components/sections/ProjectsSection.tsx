@@ -8,22 +8,25 @@ gsap.registerPlugin(ScrollTrigger);
 
 const projects = [
   {
-    id: 1, title: 'Easymoto Rental Service', company: 'Easymoto Rental Service Pvt. Ltd.',
+    id: 1, title: 'Easymoto Rental Service',
+    company: 'Easymoto Rental Service Pvt. Ltd.',
     domain: 'easymoto.com.np', link: 'https://easymoto.com.np',
-    desc: 'Motorbike rental platform — browse, book & manage rentals with ease.',
-    tags: ['Web App', 'Booking', 'Nepal'], image: '🏍️', accent: '#3B82F6',
+    desc: 'A full-featured motorbike rental platform where users can browse, book, and manage rentals seamlessly.',
+    tags: ['Web App', 'Booking System', 'Nepal'], image: '🏍️', accent: '#3B82F6',
   },
   {
-    id: 2, title: 'Amicus Institute of Law', company: 'Amicus Institute of Law Pvt. Ltd.',
+    id: 2, title: 'Amicus Institute of Law',
+    company: 'Amicus Institute of Law Pvt. Ltd.',
     domain: 'amicus.com.np', link: 'https://amicus.com.np',
-    desc: "Nepal's premier law institute — programs, faculty & resources online.",
-    tags: ['Corporate', 'Legal', 'Education'], image: '⚖️', accent: '#A855F7',
+    desc: "Nepal's premier law institute — programs, faculty and resources presented with a clean, authoritative design.",
+    tags: ['Corporate Site', 'Legal', 'Education'], image: '⚖️', accent: '#A855F7',
   },
   {
-    id: 3, title: 'Aryal Multipurpose Farm', company: 'Aryal Multipurpose Agricultural Farm Pvt. Ltd.',
+    id: 3, title: 'Aryal Multipurpose Farm',
+    company: 'Aryal Multipurpose Agricultural Farm Pvt. Ltd.',
     domain: 'aryalfarm.com.np', link: 'https://aryalfarm.com.np',
-    desc: 'Premium dairy & farm products — farm-to-table ethos meets modern design.',
-    tags: ['Agriculture', 'Branding', 'Nepal'], image: '🌾', accent: '#10B981',
+    desc: 'Premium dairy & agricultural products — farm-to-table ethos meets modern digital design.',
+    tags: ['Agriculture', 'Branding', 'Products'], image: '🌾', accent: '#10B981',
   },
 ];
 
@@ -33,90 +36,55 @@ export default function ProjectsSection() {
   useEffect(() => {
     if (!sectionRef.current) return;
     const ctx = gsap.context(() => {
-      gsap.from('.proj-header', {
-        opacity: 0, y: 40, duration: 0.8, ease: 'power2.out',
-        scrollTrigger: { trigger: sectionRef.current, start: 'top 75%' },
-      });
-      gsap.from('.project-card', {
-        opacity: 0, y: 40, scale: 0.96,
-        stagger: 0.15, duration: 0.7, ease: 'power3.out',
-        scrollTrigger: { trigger: '.projects-grid', start: 'top 80%' },
-      });
+      gsap.from('.pj-head', { opacity: 0, y: 40, duration: 0.8, ease: 'power2.out', scrollTrigger: { trigger: sectionRef.current, start: 'top 75%' } });
+      gsap.from('.project-card', { opacity: 0, y: 40, scale: 0.96, stagger: 0.15, duration: 0.8, ease: 'power3.out', scrollTrigger: { trigger: '.pj-grid', start: 'top 80%' } });
     }, sectionRef);
     return () => ctx.revert();
   }, []);
 
   return (
     <section ref={sectionRef} id="projects" className="section relative overflow-hidden" style={{ background: '#0A0A0F' }}>
-      <div className="orb orb-cyan absolute w-[400px] h-[400px] top-0 left-1/2 -translate-x-1/2 opacity-10" />
+      <div className="orb orb-cyan absolute w-[400px] h-[400px] opacity-10" style={{ top: 0, left: '50%', transform: 'translateX(-50%)' }} />
 
       <div className="container relative z-10">
         {/* Header */}
-        <div className="proj-header text-center mb-14">
-          <div className="section-label mx-auto mb-5">Our Work</div>
-          <h2 className="font-display font-black mb-4 text-white">
+        <div className="pj-head text-center" style={{ marginBottom: 72 }}>
+          <div className="section-label mx-auto">Our Work</div>
+          <h2 className="font-display font-black" style={{ marginBottom: 20 }}>
             Super{' '}
-            <span style={{ background: 'linear-gradient(135deg,#3B82F6,#A855F7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-              Projects
-            </span>
+            <span style={{ background: 'linear-gradient(135deg,#3B82F6,#A855F7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Projects</span>
           </h2>
-          <p className="text-gray-400 text-lg max-w-xl mx-auto">
-            Real products built for real businesses — click to visit the live site.
+          <p className="text-gray-400 text-lg max-w-xl mx-auto" style={{ lineHeight: 1.8 }}>
+            Real products built for real businesses. Click any card to visit the live site.
           </p>
         </div>
 
-        {/* Compact 3-column grid */}
-        <div className="projects-grid grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* 3-column grid */}
+        <div className="pj-grid grid grid-cols-1 md:grid-cols-3" style={{ gap: 28 }}>
           {projects.map(p => (
-            <a
-              key={p.id}
-              href={p.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="project-card group relative rounded-2xl overflow-hidden transition-all duration-350 block"
-              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}
-              onMouseEnter={e => {
-                const el = e.currentTarget as HTMLElement;
-                el.style.border = `1px solid ${p.accent}45`;
-                el.style.transform = 'translateY(-6px)';
-                el.style.boxShadow = `0 20px 60px rgba(0,0,0,0.4), 0 0 40px ${p.accent}20`;
-              }}
-              onMouseLeave={e => {
-                const el = e.currentTarget as HTMLElement;
-                el.style.border = '1px solid rgba(255,255,255,0.07)';
-                el.style.transform = 'translateY(0)';
-                el.style.boxShadow = 'none';
-              }}
+            <a key={p.id} href={p.link} target="_blank" rel="noopener noreferrer"
+              className="project-card block relative overflow-hidden group"
+              style={{ borderRadius: 24, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', transition: 'all 0.35s ease', textDecoration: 'none' }}
+              onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.border = `1px solid ${p.accent}45`; el.style.transform = 'translateY(-8px)'; el.style.boxShadow = `0 28px 64px rgba(0,0,0,0.45), 0 0 48px ${p.accent}22`; }}
+              onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.border = '1px solid rgba(255,255,255,0.08)'; el.style.transform = 'translateY(0)'; el.style.boxShadow = 'none'; }}
             >
               {/* Image area */}
-              <div className="relative h-44 flex items-center justify-center overflow-hidden"
-                style={{ background: `linear-gradient(135deg, ${p.accent}18 0%, ${p.accent}06 100%)` }}>
-                <div className="absolute inset-0 opacity-10"
-                  style={{ background: `radial-gradient(circle at center, ${p.accent} 0%, transparent 65%)` }} />
-                <span className="text-7xl select-none group-hover:scale-110 transition-transform duration-400 relative z-10">
-                  {p.image}
-                </span>
-                {/* Domain pill */}
-                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold"
-                  style={{ background: 'rgba(0,0,0,0.55)', border: `1px solid ${p.accent}35`, color: p.accent, backdropFilter: 'blur(8px)' }}>
-                  <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
-                  {p.domain}
+              <div className="relative flex items-center justify-center overflow-hidden" style={{ height: 180, background: `linear-gradient(135deg, ${p.accent}18 0%, ${p.accent}08 100%)` }}>
+                <div className="absolute inset-0 opacity-10" style={{ background: `radial-gradient(circle at center, ${p.accent} 0%, transparent 65%)` }} />
+                <span className="text-7xl select-none relative z-10 group-hover:scale-110 transition-transform duration-500">{p.image}</span>
+                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 text-xs font-mono font-semibold" style={{ padding: '5px 14px', borderRadius: 999, background: 'rgba(0,0,0,0.6)', border: `1px solid ${p.accent}35`, color: p.accent, backdropFilter: 'blur(8px)', whiteSpace: 'nowrap' }}>
+                  <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />{p.domain}
                 </div>
               </div>
 
               {/* Content */}
-              <div className="p-5">
-                <div className="text-xs font-bold uppercase tracking-widest mb-1.5" style={{ color: p.accent }}>
-                  {p.company}
-                </div>
-                <h3 className="text-white font-bold text-lg mb-2 leading-snug">{p.title}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed mb-4">{p.desc}</p>
-                <div className="flex flex-wrap gap-1.5 mb-4">
+              <div style={{ padding: '28px 28px 32px' }}>
+                <div style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: p.accent, marginBottom: 8 }}>{p.company}</div>
+                <h3 className="text-white font-bold" style={{ fontSize: '1.2rem', marginBottom: 12, lineHeight: 1.3 }}>{p.title}</h3>
+                <p className="text-gray-400 text-sm" style={{ lineHeight: 1.75, marginBottom: 20 }}>{p.desc}</p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 20 }}>
                   {p.tags.map(t => (
-                    <span key={t} className="px-2.5 py-1 rounded-full text-xs font-semibold"
-                      style={{ background: `${p.accent}12`, border: `1px solid ${p.accent}25`, color: p.accent }}>
-                      {t}
-                    </span>
+                    <span key={t} style={{ padding: '4px 12px', borderRadius: 999, fontSize: '0.73rem', fontWeight: 600, background: `${p.accent}12`, border: `1px solid ${p.accent}28`, color: p.accent }}>{t}</span>
                   ))}
                 </div>
                 <div className="flex items-center gap-2 text-sm font-semibold" style={{ color: p.accent }}>
@@ -130,9 +98,9 @@ export default function ProjectsSection() {
           ))}
         </div>
 
-        <div className="text-center mt-12">
-          <p className="text-gray-500 mb-4">Want to be our next success story?</p>
-          <a href="#contact" className="btn btn-secondary px-8 py-3">Start Your Project →</a>
+        <div className="text-center" style={{ marginTop: 64 }}>
+          <p className="text-gray-500" style={{ marginBottom: 20 }}>Want to be our next success story?</p>
+          <a href="#contact" className="btn btn-secondary" style={{ padding: '14px 36px' }}>Start Your Project →</a>
         </div>
       </div>
     </section>
