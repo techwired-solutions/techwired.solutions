@@ -38,7 +38,7 @@ function GeometricShapes() {
         <mesh ref={dodecahedronRef}>
           <dodecahedronGeometry args={[1.2, 0]} />
           <meshStandardMaterial
-            color="#8B5CF6"
+            color="#4c00ffff"
             wireframe
             transparent
             opacity={0.6}
@@ -51,7 +51,7 @@ function GeometricShapes() {
         <mesh ref={icosahedronRef}>
           <icosahedronGeometry args={[1, 0]} />
           <meshStandardMaterial
-            color="#FACC15"
+            color="#ffcc00ff"
             wireframe
             transparent
             opacity={0.7}
@@ -64,7 +64,7 @@ function GeometricShapes() {
         <mesh ref={torusRef}>
           <torusGeometry args={[1, 0.4, 16, 100]} />
           <meshStandardMaterial
-            color="#6D28D9"
+            color="#6200ffff"
             wireframe
             transparent
             opacity={0.5}
@@ -77,7 +77,7 @@ function GeometricShapes() {
       <Float speed={2.5} rotationIntensity={0.2} floatIntensity={0.3} position={[5, 0.25, 0]}>
         <Sphere args={[1.5, 64, 64]}>
           <MeshDistortMaterial
-            color="#8B5CF6"
+            color="#4c00ffff"
             attach="material"
             distort={0.4}
             speed={2}
