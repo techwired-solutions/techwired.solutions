@@ -108,7 +108,13 @@ function DarkSelect({
   );
 }
 
-export default function ContactForm() {
+export default function ContactForm({
+  onSuccess,
+  onError,
+}: {
+  onSuccess?: () => void;
+  onError?: () => void;
+}) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
@@ -123,22 +129,20 @@ export default function ContactForm() {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
       await axios.post(`${apiUrl}/api/inquiry`, data);
       setSubmitStatus('success');
+      onSuccess?.();
       reset();
       setTimeout(() => setSubmitStatus('idle'), 5000);
     } catch (err) {
       console.error('Form submission error:', err);
       setSubmitStatus('error');
+      onError?.();
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div>
-        <h3 className="text-white font-bold text-xl mb-1">Send Us a Message</h3>
-        <p className="text-gray-500 text-sm">Fill in the form below and we&apos;ll be in touch.</p>
-      </div>
+    <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
 
       {/* Status messages */}
       {submitStatus === 'success' && (

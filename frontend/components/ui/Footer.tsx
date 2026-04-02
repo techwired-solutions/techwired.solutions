@@ -63,41 +63,38 @@ export default function Footer() {
 
   return (
     <footer className="relative overflow-hidden border-t" style={{ background: '#0A0A0F', borderColor: 'rgba(255,255,255,0.06)' }}>
-      {/* Partners strip */}
-      <div className="border-b" style={{ borderColor: 'rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.02)' }}>
-        <div className="container py-10">
-          <p className="text-center text-xs font-bold uppercase tracking-widest text-gray-600 mb-8">
+      {/* Partners — vertical list */}
+      <div className="border-b" style={{ borderColor: 'rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.015)' }}>
+        <div className="container" style={{ paddingTop: 64, paddingBottom: 64 }}>
+          <p style={{ textAlign: 'center', fontSize: '0.7rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#334155', marginBottom: 40 }}>
             Trusted By Our Partners
           </p>
-          <div className="flex flex-wrap justify-center items-center gap-8">
-            {partners.map(partner => (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16, maxWidth: 520, margin: '0 auto' }}>
+            {partners.map((partner, i) => (
               <a
                 key={partner.name}
                 href={partner.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center gap-3 px-6 py-3 rounded-xl transition-all duration-300"
-                style={{ border: '1px solid rgba(255,255,255,0.06)' }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.borderColor = 'rgba(59,130,246,0.3)';
-                  (e.currentTarget as HTMLElement).style.background = 'rgba(59,130,246,0.06)';
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.06)';
-                  (e.currentTarget as HTMLElement).style.background = 'transparent';
-                }}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, padding: '18px 24px', borderRadius: 16, background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.07)', textDecoration: 'none', transition: 'all 0.25s ease' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(59,130,246,0.07)'; (e.currentTarget as HTMLElement).style.borderColor = 'rgba(59,130,246,0.3)'; (e.currentTarget as HTMLElement).style.transform = 'translateX(4px)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.02)'; (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.07)'; (e.currentTarget as HTMLElement).style.transform = 'translateX(0)'; }}
               >
-                <div className="relative w-8 h-8 flex-shrink-0 rounded-full overflow-hidden bg-white/5">
-                  <Image
-                    src={partner.logo}
-                    alt={`${partner.name} logo`}
-                    fill
-                    className="object-contain p-1 grayscale group-hover:grayscale-0 transition-all duration-300"
-                  />
+                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                  {/* Number */}
+                  <div style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: 700, color: '#3B82F6', flexShrink: 0 }}>
+                    {String(i + 1).padStart(2, '0')}
+                  </div>
+                  {/* Emoji + name */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <span style={{ fontSize: 22 }}>{partner.emoji}</span>
+                    <span style={{ color: '#CBD5E1', fontWeight: 600, fontSize: '0.95rem' }}>{partner.name}</span>
+                  </div>
                 </div>
-                <span className="text-gray-500 group-hover:text-gray-200 text-sm font-semibold transition-colors duration-200">
-                  {partner.name}
-                </span>
+                {/* Domain pill */}
+                <div style={{ fontSize: '0.72rem', color: '#3B82F6', fontFamily: 'monospace', padding: '3px 10px', borderRadius: 999, background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', whiteSpace: 'nowrap' }}>
+                  {partner.url.replace('https://', '')}
+                </div>
               </a>
             ))}
           </div>
