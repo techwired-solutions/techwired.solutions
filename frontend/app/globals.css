@@ -20,10 +20,15 @@ html {
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background-color: #0A0A0F;
+  background-color: #000000;
   color: #F1F5F9;
   line-height: 1.6;
   overflow-x: hidden;
+}
+
+.dark {
+  --gradient-color: #8350e8;
+  --sparkles-color: #ffffff;
 }
 
 /* ============================================
@@ -32,10 +37,10 @@ body {
 
 :root {
   /* Backgrounds */
-  --bg-base:       #0A0A0F;
-  --bg-surface:    #0F0F1A;
-  --bg-elevated:   #13131E;
-  --bg-card:       #161625;
+  --bg-base:       #000000;
+  --bg-surface:    #050510;
+  --bg-elevated:   #080816;
+  --bg-card:       #0A0A1C;
 
   /* Primary — Electric Blue */
   --blue:          #3B82F6;
@@ -76,6 +81,10 @@ body {
   --t-fast: 150ms cubic-bezier(.4,0,.2,1);
   --t-base: 300ms cubic-bezier(.4,0,.2,1);
   --t-slow: 500ms cubic-bezier(.4,0,.2,1);
+
+  /* Sparkles & Partners Theme */
+  --gradient-color: #8350e8;
+  --sparkles-color: #8350e8;
 }
 
 /* ============================================

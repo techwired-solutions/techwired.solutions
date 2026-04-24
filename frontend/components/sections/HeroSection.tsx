@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
+import { ParticleTextEffect } from '@/components/ui/particle-text-effect';
 
-const HeroScene = dynamic(() => import('../3d/HeroScene'), { ssr: false });
+
 
 const WORDS = ['Websites', 'Mobile Apps', 'Brands', 'Solutions', 'Experiences'];
 
@@ -22,67 +23,43 @@ export default function HeroSection() {
       id="home"
       style={{
         position: 'relative',
-        minHeight: '100vh',
+        minHeight: '100svh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        overflow: 'hidden',
-        background: 'linear-gradient(180deg, #06060F 0%, #0D0D1A 100%)',
+        background: 'transparent',
       }}
     >
-      {/* 3D scene */}
-      {mounted && (
-        <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
-          <HeroScene />
-        </div>
-      )}
+      {/* Full-section particle canvas — absolute, behind content */}
+      <div style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none' }}>
+        <h1 className="sr-only">Techwired Solutions</h1>
+        <ParticleTextEffect
+          lines={[
+            { text: 'TECHWIRED', color: { r: 59, g: 130, b: 246 } },
+            { text: 'SOLUTIONS', color: { r: 250, g: 204, b: 21 } },
+          ]}
+          fontSize={120}
+          lineGap={10}
+          className="opacity-90"
+        />
+      </div>
 
       {/* gradient overlay */}
-      <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(180deg, rgba(6,6,15,0.6) 0%, rgba(6,6,15,0.75) 100%)' }} />
+      <div style={{ position: 'absolute', inset: 0, zIndex: 2, background: 'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 100%)', pointerEvents: 'none' }} />
 
       {/* Content */}
       <div style={{
-        position: 'relative', zIndex: 2,
+        position: 'relative', zIndex: 3,
         display: 'flex', flexDirection: 'column', alignItems: 'center',
-        textAlign: 'center', gap: 32,
-        padding: '160px 24px 100px',
+        textAlign: 'center', gap: 14,
+        padding: '340px 24px 40px',
         maxWidth: 900, margin: '0 auto',
+        pointerEvents: 'none',
       }}>
 
-        {/* Main headline */}
-        <div>
-          <h1 style={{
-            fontFamily: "'Syne', 'Inter', sans-serif",
-            fontWeight: 900,
-            lineHeight: 1,
-            letterSpacing: '-0.03em',
-            margin: 0,
-          }}>
-            <span style={{
-              display: 'block',
-              fontSize: 'clamp(3.5rem, 10vw, 8rem)',
-              background: 'linear-gradient(135deg, #3B82F6 0%, #00D4FF 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}>
-              Techwired
-            </span>
-            <span style={{
-              display: 'block',
-              fontSize: 'clamp(3.5rem, 10vw, 8rem)',
-              background: 'linear-gradient(135deg, #FACC15 0%, #F97316 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}>
-              Solutions
-            </span>
-          </h1>
-        </div>
 
         {/* Cycling subtitle */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: 'clamp(1.1rem, 2.5vw, 1.4rem)', color: '#94A3B8', fontWeight: 500 }} aria-live="polite">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: 'clamp(1.1rem, 2.5vw, 1.4rem)', color: '#94A3B8', fontWeight: 500, pointerEvents: 'auto' }} aria-live="polite">
           <span>Powering Your</span>
           <div style={{ position: 'relative', overflow: 'hidden', height: '1.6em', minWidth: 200 }} aria-label={WORDS[wordIdx]}>
             {WORDS.map((w, i) => (
@@ -101,13 +78,13 @@ export default function HeroSection() {
         </div>
 
         {/* Description */}
-        <p style={{ fontSize: '1.1rem', color: '#64748B', maxWidth: 520, lineHeight: 1.85, margin: 0 }}>
+        <p style={{ fontSize: '1.1rem', color: '#64748B', maxWidth: 520, lineHeight: 1.85, margin: 0, pointerEvents: 'auto' }}>
           From domain to deployment — websites, mobile apps, branding, and
           everything digital to make your business stand out.
         </p>
 
         {/* CTAs */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, justifyContent: 'center', paddingTop: 8 }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, justifyContent: 'center', paddingTop: 8, pointerEvents: 'auto' }}>
           <a href="#contact"
             style={{
               display: 'inline-flex', alignItems: 'center', gap: 8,
@@ -141,7 +118,7 @@ export default function HeroSection() {
         </div>
 
         {/* Stats */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '16px 48px', paddingTop: 40, borderTop: '1px solid rgba(255,255,255,0.07)', width: '100%' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '16px 48px', paddingTop: 40, borderTop: '1px solid rgba(255,255,255,0.07)', width: '100%', pointerEvents: 'auto' }}>
           {[{ n: '50+', l: 'Projects' }, { n: '30+', l: 'Clients' }, { n: '5+', l: 'Years' }, { n: '100%', l: 'Satisfaction' }].map(s => (
             <div key={s.l} style={{ textAlign: 'center' }}>
               <div style={{ fontSize: '1.8rem', fontWeight: 900, fontFamily: "'Syne', sans-serif", background: 'linear-gradient(135deg,#FACC15,#F97316)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{s.n}</div>

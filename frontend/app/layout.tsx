@@ -32,17 +32,29 @@ export const metadata: Metadata = {
   icons: { icon: "/images/logo.png" },
 };
 
+import ClientOverlays from "@/components/ui/ClientOverlays";
+import { ThemeProvider } from "@/components/Providers";
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" style={{ colorScheme: "dark" }}>
+    <html lang="en" style={{ colorScheme: "dark" }} suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${syne.variable} antialiased bg-[#0A0A0F] text-[#F1F5F9]`}
+        className={`${inter.variable} ${syne.variable} antialiased bg-black text-white`}
         style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}
       >
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <ClientOverlays />
+        </ThemeProvider>
       </body>
     </html>
   );
 }
+

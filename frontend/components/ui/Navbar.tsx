@@ -60,7 +60,7 @@ export default function Navbar() {
             paddingBottom: isScrolled ? '10px' : '12px',
           }}
           transition={{ duration: 0.3 }}
-          className="flex items-center gap-6 px-5 rounded-full border border-white/[0.08] backdrop-blur-2xl"
+          className="flex items-center gap-10 px-10 rounded-full border border-white/[0.08] backdrop-blur-2xl"
           style={{
             background: isScrolled
               ? 'rgba(10,10,15,0.85)'
@@ -96,13 +96,13 @@ export default function Navbar() {
           <div className="hidden md:block w-px h-5 bg-white/10" />
 
           {/* Desktop Nav Links */}
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden md:flex items-center gap-4">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="relative px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200 rounded-full hover:bg-white/5 group"
+                className="relative px-5 py-2.5 text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200 rounded-full hover:bg-white/5 group"
               >
                 {link.name}
                 <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-blue-400 scale-0 group-hover:scale-100 transition-transform duration-200" />

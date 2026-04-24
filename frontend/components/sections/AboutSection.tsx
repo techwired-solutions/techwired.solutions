@@ -64,7 +64,7 @@ export default function AboutSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} id="about" className="section relative overflow-hidden" style={{ background: '#0D0D1A' }}>
+    <section ref={sectionRef} id="about" className="section relative overflow-hidden" style={{ background: 'transparent' }}>
       {/* Orbs */}
       <div className="orb orb-purple absolute w-[600px] h-[600px] opacity-20" style={{ top: '-150px', right: '-150px' }} />
       <div className="orb orb-blue   absolute w-[500px] h-[500px] opacity-15" style={{ bottom: '-100px', left: '-100px' }} />
@@ -141,7 +141,7 @@ export default function AboutSection() {
         {/* ── Stats ── */}
         <div className="ab-stats grid grid-cols-2 md:grid-cols-4" style={{ gap: 20, marginBottom: 100 }}>
           {stats.map(s => (
-            <div key={s.label} className="ab-stat text-center" style={{ padding: '36px 20px', borderRadius: 20, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(59,130,246,0.2)' }}>
+            <div key={s.label} className="ab-stat text-center" style={{ padding: '36px 20px', borderRadius: 20, background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(59,130,246,0.2)', backdropFilter: 'blur(12px)' }}>
               <div style={{ fontSize: 32, marginBottom: 12 }}>{s.icon}</div>
               <div className="font-display font-black" style={{ fontSize: '2.5rem', marginBottom: 6, background: 'linear-gradient(135deg,#3B82F6,#00D4FF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
                 <CountUp target={s.n} suffix={s.s} />
@@ -159,9 +159,9 @@ export default function AboutSection() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4" style={{ gap: 20 }}>
             {journey.map((m, i) => (
-              <div key={m.year} className="ab-journey-card relative overflow-hidden" style={{ padding: '32px 28px', borderRadius: 20, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', transition: 'all 0.3s ease' }}
+              <div key={m.year} className="ab-journey-card relative overflow-hidden" style={{ padding: '24px 28px', borderRadius: 20, background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', backdropFilter: 'blur(12px)', transition: 'all 0.3s ease' }}
                 onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = `${m.color}40`; el.style.background = `${m.color}0D`; el.style.transform = 'translateY(-6px)'; el.style.boxShadow = `0 20px 50px rgba(0,0,0,0.3)`; }}
-                onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'rgba(255,255,255,0.08)'; el.style.background = 'rgba(255,255,255,0.03)'; el.style.transform = 'translateY(0)'; el.style.boxShadow = 'none'; }}>
+                onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'rgba(255,255,255,0.08)'; el.style.background = 'rgba(255,255,255,0.02)'; el.style.transform = 'translateY(0)'; el.style.boxShadow = 'none'; }}>
                 <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 12px', borderRadius: 999, background: `${m.color}18`, border: `1px solid ${m.color}35`, color: m.color, fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 16 }}>
                   <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'currentColor' }} />{m.year}
                 </div>

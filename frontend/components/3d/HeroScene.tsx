@@ -3,81 +3,64 @@
 import React, { useRef, useMemo, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera, Float, MeshDistortMaterial, Sphere } from '@react-three/drei';
+import { OrbitControls, PerspectiveCamera, Float, MeshDistortMaterial, Sphere, Stars } from '@react-three/drei';
 import * as THREE from 'three';
 
 // Geometric Shapes Component
 function GeometricShapes() {
-  const dodecahedronRef = useRef<THREE.Mesh>(null);
-  const icosahedronRef = useRef<THREE.Mesh>(null);
-  const torusRef = useRef<THREE.Mesh>(null);
+  const torus1Ref = useRef<THREE.Mesh>(null);
+  const torus2Ref = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
     const time = state.clock.elapsedTime;
 
-    if (dodecahedronRef.current) {
-      dodecahedronRef.current.rotation.x = time * 0.2;
-      dodecahedronRef.current.rotation.y = time * 0.3;
+    if (torus1Ref.current) {
+      torus1Ref.current.rotation.x = time * 0.1;
+      torus1Ref.current.rotation.y = time * 0.2;
     }
-
-    if (icosahedronRef.current) {
-      icosahedronRef.current.rotation.x = time * -0.15;
-      icosahedronRef.current.rotation.z = time * 0.25;
-    }
-
-    if (torusRef.current) {
-      torusRef.current.rotation.x = time * 0.1;
-      torusRef.current.rotation.y = time * 0.2;
+    if (torus2Ref.current) {
+      torus2Ref.current.rotation.x = time * 0.2;
+      torus2Ref.current.rotation.y = time * 0.1;
     }
   });
 
   return (
     <>
-      {/* Dodecahedron */}
-      <Float speed={2} rotationIntensity={0.3} floatIntensity={0.5} position={[-3, 1, -2]}>
-        <mesh ref={dodecahedronRef}>
-          <dodecahedronGeometry args={[1.2, 0]} />
-          <meshStandardMaterial
-            color="#4c00ffff"
-            wireframe
-            transparent
-            opacity={0.6}
-          />
-        </mesh>
-      </Float>
-
-      {/* Icosahedron */}
-      <Float speed={1.5} rotationIntensity={0.4} floatIntensity={0.6} position={[3, -3, -1]}>
-        <mesh ref={icosahedronRef}>
-          <icosahedronGeometry args={[1, 0]} />
-          <meshStandardMaterial
-            color="#ffcc00ff"
-            wireframe
-            transparent
-            opacity={0.7}
-          />
-        </mesh>
-      </Float>
-
       {/* Torus */}
-      <Float speed={1.8} rotationIntensity={0.5} floatIntensity={0.4} position={[0, 2, -3]}>
-        <mesh ref={torusRef}>
+      <Float speed={1.8} rotationIntensity={0.7} floatIntensity={0.4} position={[-3, 1, 3]}>
+        <mesh ref={torus1Ref}>
           <torusGeometry args={[1, 0.4, 16, 100]} />
           <meshStandardMaterial
-            color="#6200ffff"
+            color="#ffffffff"
             wireframe
             transparent
-            opacity={0.5}
+            opacity={1}
+            emissive="#ffffffff"
+            emissiveIntensity={0.5}
           />
         </mesh>
       </Float>
+
+      {/* <Float speed={1.8} rotationIntensity={0.5} floatIntensity={0.4} position={[2, -2, 2]}>
+        <mesh ref={torus2Ref}>
+          <torusGeometry args={[1, 0.4, 16, 100]} />
+          <meshStandardMaterial
+            color="#ffffffff"
+            wireframe
+            transparent
+            opacity={0.9}
+            emissive="#ffffffff"
+            emissiveIntensity={0.3}
+          />
+        </mesh>
+      </Float> */}
 
       {/* Distorted Sphere (Main focal point) */}
       {/* Distorted Sphere (Main focal point) */}
       <Float speed={2.5} rotationIntensity={0.2} floatIntensity={0.3} position={[5, 0.25, 0]}>
         <Sphere args={[1.5, 64, 64]}>
           <MeshDistortMaterial
-            color="#4c00ffff"
+            color="#000000ff"
             attach="material"
             distort={0.4}
             speed={2}
@@ -94,7 +77,7 @@ function GeometricShapes() {
 function ParticleField() {
   const particlesRef = useRef<THREE.Points>(null);
   
-  const particlesCount = 2000;
+  const particlesCount = 5000;
   const { positions, colors } = useMemo(() => {
     const pos = new Float32Array(particlesCount * 3);
     const cols = new Float32Array(particlesCount * 3);
@@ -183,7 +166,7 @@ function Scene() {
         angle={0.5}
         penumbra={1}
         intensity={1.5}
-        color="#A78BFA"
+        color="#4000ffff"
         castShadow
       />
       
@@ -191,15 +174,21 @@ function Scene() {
       <GeometricShapes />
       <ParticleField />
       
+      {/* Background Stars */}
+      <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+      
       {/* Environment */}
-      <fog attach="fog" args={['#06060F', 8, 25]} />
+      <fog attach="fog" args={['#000000', 10, 30]} />
     </>
   );
 }
 
-function HeroScene() {
+function GlobalBackground3D() {
   return (
-    <div className="w-full h-screen absolute top-0 left-0 -z-10" style={{ background: '#06060F' }}>
+    <div 
+      className="fixed inset-0 -z-10 pointer-events-none" 
+      style={{ background: 'black' }}
+    >
       <Canvas shadows>
         <Suspense fallback={null}>
           <Scene />
@@ -210,9 +199,9 @@ function HeroScene() {
 }
 
 // Export as client-only component
-export default dynamic(() => Promise.resolve(HeroScene), {
+export default dynamic(() => Promise.resolve(GlobalBackground3D), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-screen absolute top-0 left-0 -z-10 bg-gradient-to-b from-purple-50 to-white" />
+    <div className="fixed inset-0 -z-10 bg-black" />
   ),
 });
