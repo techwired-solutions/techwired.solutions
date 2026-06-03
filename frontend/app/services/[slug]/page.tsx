@@ -25,7 +25,8 @@ export default function ServiceDetail() {
            opacity: 0,
            duration: 1,
            stagger: 0.2,
-           ease: 'power3.out'
+           ease: 'power3.out',
+           immediateRender: false,
         });
      }
   }, []);

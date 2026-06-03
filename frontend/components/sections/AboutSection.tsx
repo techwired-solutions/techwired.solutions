@@ -68,44 +68,7 @@ const journey = [
   },
 ];
 
-const whyChoose = [
-  {
-    icon: '⚡',
-    title: 'Lightning Fast Delivery',
-    desc: 'We ship production-ready products on time — always. Sprint-based workflows ensure zero surprises.',
-    color: '#FACC15',
-  },
-  {
-    icon: '🎨',
-    title: 'Premium Design Quality',
-    desc: 'Every pixel is intentional. Our designers craft experiences that convert visitors into customers.',
-    color: '#A855F7',
-  },
-  {
-    icon: '🔒',
-    title: 'Secure & Scalable',
-    desc: 'Built on rock-solid architectures. Your product scales with you from day one to enterprise.',
-    color: '#3B82F6',
-  },
-  {
-    icon: '📞',
-    title: '24/7 Dedicated Support',
-    desc: 'We don\'t disappear after launch. Our team is always reachable — WhatsApp, email, calls.',
-    color: '#10B981',
-  },
-  {
-    icon: '💡',
-    title: 'Strategy-First Approach',
-    desc: 'We don\'t just build what you ask — we ask the right questions to build what you need.',
-    color: '#00D4FF',
-  },
-  {
-    icon: '🏆',
-    title: 'Proven Track Record',
-    desc: '50+ projects delivered with 100% client satisfaction. Our portfolio speaks for itself.',
-    color: '#F97316',
-  },
-];
+/* whyChoose data moved to FeaturesSection (unified) */
 
 const skills = ['React / Next.js', 'React Native', 'Node.js', 'GSAP', 'Figma', 'SEO'];
 
@@ -115,11 +78,10 @@ export default function AboutSection() {
   useEffect(() => {
     if (!sectionRef.current) return;
     const ctx = gsap.context(() => {
-      gsap.from('.ab-visual', { opacity: 0, x: -60, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: sectionRef.current, start: 'top 70%' } });
-      gsap.from('.ab-copy',   { opacity: 0, x:  60, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: sectionRef.current, start: 'top 70%' } });
-      gsap.from('.ab-stat',   { opacity: 0, y: 30, scale: 0.9, stagger: 0.1, duration: 0.7, ease: 'back.out(1.5)', scrollTrigger: { trigger: '.ab-stats', start: 'top 82%' } });
-      gsap.from('.ab-journey-card', { opacity: 0, y: 30, stagger: 0.12, duration: 0.7, ease: 'power2.out', scrollTrigger: { trigger: '.ab-journey', start: 'top 80%' } });
-      gsap.from('.ab-why-card', { opacity: 0, y: 30, stagger: 0.08, duration: 0.6, ease: 'power2.out', scrollTrigger: { trigger: '.ab-why', start: 'top 80%' } });
+      gsap.from('.ab-visual', { opacity: 0, x: -60, duration: 1, ease: 'power3.out', immediateRender: false, scrollTrigger: { trigger: sectionRef.current, start: 'top 70%', once: true } });
+      gsap.from('.ab-copy',   { opacity: 0, x:  60, duration: 1, ease: 'power3.out', immediateRender: false, scrollTrigger: { trigger: sectionRef.current, start: 'top 70%', once: true } });
+      gsap.from('.ab-stat',   { opacity: 0, y: 30, scale: 0.9, stagger: 0.1, duration: 0.7, ease: 'back.out(1.5)', immediateRender: false, scrollTrigger: { trigger: '.ab-stats', start: 'top 82%', once: true } });
+      gsap.from('.ab-journey-card', { opacity: 0, y: 30, stagger: 0.12, duration: 0.7, ease: 'power2.out', immediateRender: false, scrollTrigger: { trigger: '.ab-journey', start: 'top 80%', once: true } });
     }, sectionRef);
     return () => ctx.revert();
   }, []);
@@ -299,62 +261,7 @@ export default function AboutSection() {
           </div>
         </div>
 
-        {/* ── Why Choose Us ── */}
-        <div className="ab-why">
-          <div className="text-center" style={{ marginBottom: 60 }}>
-            <div className="section-label mx-auto">Why Choose Us</div>
-            <h3 className="font-display font-bold text-white">The Techwired Advantage</h3>
-            <p className="text-gray-400 max-w-lg mx-auto" style={{ marginTop: 16, lineHeight: 1.8 }}>
-              We don&apos;t just build products — we build partnerships. Here&apos;s why leading brands trust us.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" style={{ gap: 24 }}>
-            {whyChoose.map((item) => (
-              <div key={item.title} className="ab-why-card" style={{
-                padding: '32px 28px', borderRadius: 20,
-                background: 'rgba(255,255,255,0.02)',
-                border: '1px solid rgba(255,255,255,0.07)',
-                backdropFilter: 'blur(16px)',
-                transition: 'all 0.3s ease',
-                position: 'relative', overflow: 'hidden',
-              }}
-                onMouseEnter={e => {
-                  const el = e.currentTarget as HTMLElement;
-                  el.style.borderColor = `${item.color}40`;
-                  el.style.background = `${item.color}08`;
-                  el.style.transform = 'translateY(-6px)';
-                  el.style.boxShadow = `0 24px 60px rgba(0,0,0,0.4), 0 0 0 1px ${item.color}20`;
-                }}
-                onMouseLeave={e => {
-                  const el = e.currentTarget as HTMLElement;
-                  el.style.borderColor = 'rgba(255,255,255,0.07)';
-                  el.style.background = 'rgba(255,255,255,0.02)';
-                  el.style.transform = 'translateY(0)';
-                  el.style.boxShadow = 'none';
-                }}>
-                {/* Icon */}
-                <div style={{
-                  width: 52, height: 52, borderRadius: 14,
-                  background: `${item.color}15`, border: `1px solid ${item.color}30`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 24, marginBottom: 20,
-                }}>
-                  {item.icon}
-                </div>
-                <h4 className="text-white font-bold" style={{ fontSize: '1.05rem', marginBottom: 10 }}>{item.title}</h4>
-                <p className="text-gray-400 text-sm" style={{ lineHeight: 1.75 }}>{item.desc}</p>
-                {/* Corner accent */}
-                <div style={{
-                  position: 'absolute', top: 0, right: 0,
-                  width: 80, height: 80,
-                  background: `radial-gradient(circle at top right, ${item.color}12, transparent 70%)`,
-                  borderRadius: '0 20px 0 0',
-                }} />
-              </div>
-            ))}
-          </div>
-        </div>
+        {/* Why Choose Us content consolidated into FeaturesSection */}
 
       </div>
     </section>

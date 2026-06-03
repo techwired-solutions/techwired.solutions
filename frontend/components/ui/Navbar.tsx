@@ -1,44 +1,52 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const navLinks = [
-  { name: 'Home',      href: '#home' },
-  { name: 'About',     href: '#about' },
-  { name: 'Services',  href: '#services' },
-  { name: 'Projects',  href: '#projects' },
-  { name: 'Contact',   href: '#contact' },
+  { name: 'Home',     href: '#home' },
+  { name: 'About',    href: '#about' },
+  { name: 'Services', href: '#services' },
+  { name: 'Projects', href: '#projects' },
+  { name: 'Contact',  href: '#contact' },
 ];
 
 export default function Navbar() {
-  const [isScrolled,        setIsScrolled]        = useState(false);
-  const [isMobileMenuOpen,  setIsMobileMenuOpen]  = useState(false);
-  const [isMounted,         setIsMounted]         = useState(false);
+  const [isScrolled,       setIsScrolled]       = useState(false);
+  const [isMobileOpen,     setIsMobileOpen]     = useState(false);
+  const [activeLink,       setActiveLink]       = useState('Home');
+  const [isMounted,        setIsMounted]        = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
-    const handleScroll = () => setIsScrolled(window.scrollY > 40);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => setIsScrolled(window.scrollY > 40);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Close mobile menu on ESC
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setIsMobileMenuOpen(false);
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setIsMobileOpen(false);
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
   }, []);
 
+  /* SSR skeleton */
   if (!isMounted) {
     return (
-      <nav className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-4">
-        <div className="flex items-center gap-4 px-6 py-3 rounded-full bg-black/50 backdrop-blur-xl border border-white/10">
-          <span className="text-lg font-bold">
-            <span className="text-blue-400">Techwired</span>{' '}
-            <span className="text-yellow-400">Solutions</span>
+      <nav className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-6 px-4">
+        <div
+          className="flex items-center gap-8 px-8 py-4 rounded-full"
+          style={{
+            background: 'rgba(14,14,19,0.6)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255,255,255,0.08)',
+          }}
+        >
+          <span className="font-bold text-lg tracking-tight" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+            <span style={{ color: '#85adff' }}>Techwired</span>{' '}
+            <span style={{ color: '#FACC15' }}>Solutions</span>
           </span>
         </div>
       </nav>
@@ -47,166 +55,247 @@ export default function Navbar() {
 
   return (
     <>
+      {/* ── Main floating navbar ── */}
       <motion.nav
-        className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 px-4"
+        className="fixed top-0 left-0 right-0 z-50 flex justify-center px-4"
         initial={{ y: -100, opacity: 0 }}
-        animate={{ y: 0,    opacity: 1 }}
-        transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        style={{ paddingTop: isScrolled ? 12 : 20, transition: 'padding-top 0.4s ease' }}
       >
         <motion.div
           animate={{
-            scale:         isScrolled ? 0.97 : 1,
-            paddingTop:    isScrolled ? '10px' : '12px',
-            paddingBottom: isScrolled ? '10px' : '12px',
+            scale: isScrolled ? 0.97 : 1,
           }}
-          transition={{ duration: 0.3 }}
-          className="flex items-center gap-10 px-10 rounded-full border border-white/[0.08] backdrop-blur-2xl"
+          transition={{ duration: 0.35 }}
+          className="relative w-full max-w-6xl flex items-center justify-between rounded-full"
           style={{
+            padding: isScrolled ? '10px 28px' : '14px 36px',
             background: isScrolled
-              ? 'rgba(10,10,15,0.85)'
-              : 'rgba(15,15,26,0.6)',
+              ? 'rgba(8,8,14,0.92)'
+              : 'rgba(14,14,19,0.55)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+            border: '1px solid rgba(255,255,255,0.08)',
             boxShadow: isScrolled
-              ? '0 8px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06)'
-              : '0 4px 20px rgba(0,0,0,0.2)',
+              ? '0 8px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(133,173,255,0.08)'
+              : '0 4px 24px rgba(0,0,0,0.25)',
+            transition: 'all 0.4s cubic-bezier(0.4,0,0.2,1)',
           }}
         >
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group flex-shrink-0">
+          {/* ── Logo ── */}
+          <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
             <motion.div
-              whileHover={{ scale: 1.1, rotate: 5 }}
-              transition={{ type: 'spring', stiffness: 400 }}
-              className="relative w-9 h-9"
+              whileHover={{ scale: 1.08, rotate: 5 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+              className="relative w-8 h-8"
             >
-              <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-md group-hover:bg-blue-500/40 transition-all duration-300" />
+              <div
+                className="absolute inset-0 rounded-full"
+                style={{
+                  background: 'rgba(133,173,255,0.2)',
+                  filter: 'blur(8px)',
+                  transition: 'all 0.3s ease',
+                }}
+              />
               <Image
                 src="/images/logo.png"
                 alt="Techwired Solutions"
-                width={36}
-                height={36}
+                width={32}
+                height={32}
                 className="object-contain relative z-10"
               />
             </motion.div>
-            <span className="text-sm font-bold hidden sm:block tracking-tight">
-              <span className="text-blue-400">Techwired</span>{' '}
-              <span className="text-yellow-400">Solutions</span>
+            <span
+              className="hidden sm:block font-bold text-sm tracking-tight"
+              style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+            >
+              <span style={{ color: '#85adff' }}>Techwired</span>{' '}
+              <span style={{ color: '#FACC15' }}>Solutions</span>
             </span>
           </Link>
 
-          {/* Separator */}
-          <div className="hidden md:block w-px h-5 bg-white/10" />
-
-          {/* Desktop Nav Links */}
-          <div className="hidden md:flex items-center gap-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="relative px-5 py-2.5 text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200 rounded-full hover:bg-white/5 group"
-              >
-                {link.name}
-                <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-blue-400 scale-0 group-hover:scale-100 transition-transform duration-200" />
-              </Link>
-            ))}
+          {/* ── Desktop nav links ── */}
+          <div className="hidden md:flex items-center gap-1">
+            {navLinks.map((link) => {
+              const isActive = activeLink === link.name;
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setActiveLink(link.name)}
+                  className="relative px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 group"
+                  style={{
+                    fontFamily: "'Space Grotesk', sans-serif",
+                    color: isActive ? '#85adff' : 'rgba(242,245,253,0.65)',
+                    background: isActive ? 'rgba(133,173,255,0.08)' : 'transparent',
+                  }}
+                  onMouseEnter={e => {
+                    if (!isActive) (e.currentTarget as HTMLElement).style.color = '#f2f5fd';
+                  }}
+                  onMouseLeave={e => {
+                    if (!isActive) (e.currentTarget as HTMLElement).style.color = 'rgba(242,245,253,0.65)';
+                  }}
+                >
+                  {link.name}
+                  {/* active / hover dot */}
+                  <span
+                    className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full transition-all duration-200"
+                    style={{
+                      background: '#85adff',
+                      opacity: isActive ? 1 : 0,
+                      boxShadow: isActive ? '0 0 6px #85adff' : 'none',
+                      transform: `translateX(-50%) scale(${isActive ? 1 : 0})`,
+                    }}
+                  />
+                </Link>
+              );
+            })}
           </div>
 
-          {/* Separator */}
-          <div className="hidden md:block w-px h-5 bg-white/10" />
+          {/* ── CTA + hamburger ── */}
+          <div className="flex items-center gap-4">
+            {/* Desktop CTA */}
+            <motion.a
+              href="#contact"
+              className="hidden md:inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold text-white"
+              style={{
+                fontFamily: "'Space Grotesk', sans-serif",
+                background: 'linear-gradient(135deg, #3B82F6, #A855F7)',
+                boxShadow: '0 0 20px rgba(59,130,246,0.35)',
+                letterSpacing: '0.02em',
+              }}
+              whileHover={{
+                scale: 1.04,
+                boxShadow: '0 0 32px rgba(59,130,246,0.55), 0 0 16px rgba(168,85,247,0.3)',
+              }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+            >
+              Get Started
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </motion.a>
 
-          {/* CTA */}
-          <a
-            href="#contact"
-            className="hidden md:inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold text-white transition-all duration-300"
-            style={{
-              background: 'linear-gradient(135deg, #3B82F6, #2563EB)',
-              boxShadow: '0 0 20px rgba(59,130,246,0.4)',
-            }}
-            onMouseEnter={e => {
-              (e.currentTarget as HTMLElement).style.boxShadow = '0 0 30px rgba(59,130,246,0.7)';
-              (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)';
-            }}
-            onMouseLeave={e => {
-              (e.currentTarget as HTMLElement).style.boxShadow = '0 0 20px rgba(59,130,246,0.4)';
-              (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
-            }}
-          >
-            Get Started
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </a>
-
-          {/* Mobile Hamburger */}
-          <button
-            className="md:hidden flex flex-col justify-center items-center w-9 h-9 gap-1.5"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle mobile menu"
-          >
-            <motion.span
-              animate={isMobileMenuOpen ? { rotate: 45, y: 5 } : { rotate: 0, y: 0 }}
-              className="block w-5 h-0.5 bg-gray-300 origin-center"
-              transition={{ duration: 0.2 }}
-            />
-            <motion.span
-              animate={isMobileMenuOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }}
-              className="block w-4 h-0.5 bg-gray-300"
-              transition={{ duration: 0.2 }}
-            />
-            <motion.span
-              animate={isMobileMenuOpen ? { rotate: -45, y: -5 } : { rotate: 0, y: 0 }}
-              className="block w-5 h-0.5 bg-gray-300 origin-center"
-              transition={{ duration: 0.2 }}
-            />
-          </button>
+            {/* Mobile hamburger */}
+            <button
+              className="md:hidden flex flex-col justify-center items-center w-8 h-8 gap-1.5"
+              onClick={() => setIsMobileOpen(!isMobileOpen)}
+              aria-label="Toggle menu"
+            >
+              <motion.span
+                animate={isMobileOpen ? { rotate: 45, y: 6 } : { rotate: 0, y: 0 }}
+                className="block w-5 h-0.5 origin-center"
+                style={{ background: 'rgba(242,245,253,0.8)' }}
+                transition={{ duration: 0.22 }}
+              />
+              <motion.span
+                animate={isMobileOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }}
+                className="block w-4 h-0.5"
+                style={{ background: 'rgba(242,245,253,0.8)' }}
+                transition={{ duration: 0.22 }}
+              />
+              <motion.span
+                animate={isMobileOpen ? { rotate: -45, y: -6 } : { rotate: 0, y: 0 }}
+                className="block w-5 h-0.5 origin-center"
+                style={{ background: 'rgba(242,245,253,0.8)' }}
+                transition={{ duration: 0.22 }}
+              />
+            </button>
+          </div>
         </motion.div>
       </motion.nav>
 
-      {/* Mobile Menu */}
+      {/* ── Mobile menu ── */}
       <AnimatePresence>
-        {isMobileMenuOpen && (
+        {isMobileOpen && (
           <>
             {/* Backdrop */}
             <motion.div
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+              className="fixed inset-0 z-40"
+              style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={() => setIsMobileOpen(false)}
             />
-            {/* Menu Panel */}
+
+            {/* Drawer panel */}
             <motion.div
-              className="fixed top-20 left-4 right-4 z-50 rounded-2xl border border-white/10 p-6"
-              style={{ background: 'rgba(15,15,26,0.98)', backdropFilter: 'blur(20px)' }}
-              initial={{ opacity: 0, y: -20, scale: 0.95 }}
+              className="fixed top-24 left-4 right-4 z-50 rounded-2xl overflow-hidden"
+              style={{
+                background: 'rgba(14,14,19,0.97)',
+                backdropFilter: 'blur(24px)',
+                border: '1px solid rgba(133,173,255,0.12)',
+                boxShadow: '0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04)',
+              }}
+              initial={{ opacity: 0, y: -20, scale: 0.96 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -20, scale: 0.95 }}
+              exit={{ opacity: 0, y: -20, scale: 0.96 }}
               transition={{ duration: 0.25, ease: 'easeOut' }}
             >
-              <div className="space-y-1 mb-6">
-                {navLinks.map((link, i) => (
-                  <motion.div
-                    key={link.name}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.05 }}
-                  >
-                    <Link
-                      href={link.href}
-                      className="block px-4 py-3 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 font-medium transition-all"
-                      onClick={() => setIsMobileMenuOpen(false)}
+              {/* Inner glow top */}
+              <div
+                className="absolute top-0 left-0 right-0 h-px"
+                style={{ background: 'linear-gradient(90deg, transparent, rgba(133,173,255,0.3), transparent)' }}
+              />
+
+              <div className="p-6">
+                {/* Links */}
+                <div className="space-y-1 mb-6">
+                  {navLinks.map((link, i) => (
+                    <motion.div
+                      key={link.name}
+                      initial={{ opacity: 0, x: -16 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.05 }}
                     >
-                      {link.name}
-                    </Link>
-                  </motion.div>
-                ))}
+                      <Link
+                        href={link.href}
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200"
+                        style={{
+                          fontFamily: "'Space Grotesk', sans-serif",
+                          color: activeLink === link.name ? '#85adff' : 'rgba(242,245,253,0.7)',
+                          background: activeLink === link.name ? 'rgba(133,173,255,0.08)' : 'transparent',
+                          fontWeight: 500,
+                        }}
+                        onClick={() => { setActiveLink(link.name); setIsMobileOpen(false); }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.04)'; }}
+                        onMouseLeave={e => {
+                          (e.currentTarget as HTMLElement).style.background =
+                            activeLink === link.name ? 'rgba(133,173,255,0.08)' : 'transparent';
+                        }}
+                      >
+                        <span
+                          className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                          style={{ background: activeLink === link.name ? '#85adff' : 'rgba(255,255,255,0.2)' }}
+                        />
+                        {link.name}
+                      </Link>
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* Mobile CTA */}
+                <motion.a
+                  href="#contact"
+                  className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-sm font-bold text-white"
+                  style={{
+                    fontFamily: "'Space Grotesk', sans-serif",
+                    background: 'linear-gradient(135deg, #3B82F6, #A855F7)',
+                    boxShadow: '0 0 20px rgba(59,130,246,0.3)',
+                    letterSpacing: '0.03em',
+                  }}
+                  onClick={() => setIsMobileOpen(false)}
+                  whileTap={{ scale: 0.97 }}
+                >
+                  Get Started
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </motion.a>
               </div>
-              <a
-                href="#contact"
-                className="btn btn-primary w-full text-center"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Get Started →
-              </a>
             </motion.div>
           </>
         )}

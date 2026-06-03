@@ -38,7 +38,7 @@ export default function ServicesSection() {
   useEffect(() => {
     if (!sectionRef.current) return;
     const ctx = gsap.context(() => {
-      gsap.from('.srv-head', { opacity: 0, y: 40, duration: 0.8, ease: 'power2.out', scrollTrigger: { trigger: sectionRef.current, start: 'top 75%' } });
+      gsap.from('.srv-head', { opacity: 0, y: 40, duration: 0.8, ease: 'power2.out', immediateRender: false, scrollTrigger: { trigger: sectionRef.current, start: 'top 75%', once: true } });
     }, sectionRef);
     return () => ctx.revert();
   }, []);
