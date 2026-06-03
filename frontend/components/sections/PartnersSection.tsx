@@ -1,10 +1,7 @@
 'use client';
 
 import React from 'react';
-import NextLink from 'next/link';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
-import { Sparkles } from "@/components/ui/sparkles"
 import { InfiniteSlider } from '@/components/ui/infinite-slider'
 import { ProgressiveBlur } from '@/components/ui/progressive-blur'
 import { useTheme } from "next-themes"
@@ -22,53 +19,6 @@ const Retool = () => (
     </svg>
   )
 
-const quickLinks = [
-  { name: 'Home',     href: '#home' },
-  { name: 'About',    href: '#about' },
-  { name: 'Services', href: '#services' },
-  { name: 'Projects', href: '#projects' },
-  { name: 'Contact',  href: '#contact' },
-];
-
-const serviceLinks = [
-  'Web Development',
-  'Mobile Apps',
-  'Domain & Hosting',
-  'Graphics Design',
-  'Video Production',
-  'SEO & Marketing',
-];
-
-const socialLinks = [
-  { 
-    name: 'Facebook', 
-    href: 'https://facebook.com', 
-    icon: (
-      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z" />
-      </svg>
-    ) 
-  },
-  { 
-    name: 'Instagram', 
-    href: 'https://instagram.com', 
-    icon: (
-      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
-      </svg>
-    ) 
-  },
-  { 
-    name: 'LinkedIn', 
-    href: 'https://linkedin.com', 
-    icon: (
-      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-      </svg>
-    )
-  },
-];
-
 export default function PartnersSection() {
   const { theme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
@@ -76,8 +26,6 @@ export default function PartnersSection() {
   React.useEffect(() => {
     setMounted(true);
   }, []);
-
-  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
   const brandLogos = [
     { id: "easymoto", name: "Easymoto", type: 'image', src: '/images/partners/easymoto.jpg' },
@@ -97,7 +45,7 @@ export default function PartnersSection() {
       </div>
 
       <div className="container relative z-10 px-4 pt-24 pb-12 mx-auto max-w-7xl">
-        <div className="text-center mb-16 animate-fadeIn">
+        <div className="text-center mb-16">
           <div className="section-label mx-auto mb-6">Partnership</div>
           <h2 className="font-display font-black text-4xl md:text-6xl text-white mb-6 leading-tight">
             Trusted by Industrial <span className="text-gradient-blue italic">Leaders.</span>
@@ -153,159 +101,6 @@ export default function PartnersSection() {
           />
         </div>
       </div>
-
-      {/* FOOTER INTEGRATION */}
-      <div className="relative mt-24">
-         {/* Background Sparkles & Curved Transition */}
-         <div className="relative h-[250px] w-full overflow-hidden [mask-image:radial-gradient(50%_50%,white,transparent)] -mb-32 pointer-events-none">
-            <div className="absolute inset-0 before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_bottom_center,var(--blue),transparent_70%)] before:opacity-30" />
-            <div className="absolute -left-1/4 top-1/2 aspect-[1/0.5] z-0 w-[150%] rounded-[100%] border-t border-white/10 bg-black/80 backdrop-blur-3xl" />
-            <Sparkles
-                density={1200}
-                className="absolute inset-x-0 bottom-0 h-full w-full [mask-image:radial-gradient(50%_50%,white,transparent_85%)]"
-                color="#ffffff"
-                size={1.5}
-                opacity={1}
-            />
-         </div>
-
-         {/* Main Footer Content */}
-
-            <div className="container px-4 mx-auto max-w-7xl">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 mb-20">
-                    
-                    {/* Brand Column */}
-                    <div className="lg:col-span-4 max-w-5xl">
-                        <div className="flex items-center gap-4 mb-8 group cursor-pointer">
-                            <div className="relative w25 h-25">
-                                <div className="absolute inset-0 rounded-xl bg-blue-500/30 blur-xl group-hover:bg-yellow-500/30 transition-colors duration-500" />
-                                <div className="relative z-10 w-full h-full glass border border-white/10 rounded-xl flex items-center justify-center p-2.5 overflow-hidden">
-                                     <Image src="/images/logo.png" alt="Techwired" width={100} height={100} className="object-contain" />
-                                </div>
-                            </div>
-                            {/* <div>
-                                <h3 className="font-display font-bold text-[15px] tracking-tight">
-                                    <span className="text-blue-400">Techwired</span>
-                                    <span className="text-yellow-400 ml-1">Solutions</span>
-                                </h3>
-                                <p className="text-[10px] text-blue-400 font-bold uppercase tracking-[0.2em]">Engineering Excellence</p>
-                            </div> */}
-                        </div>
-                        <p className="text-gray-400 text-base leading-relaxed mb-8 font-light">
-                            Crafting high-fidelity digital ecosystems that bridge the gap between imagination and reality. We build the future, one pixel at a time.
-                        </p>
-                        <div className="flex gap-4">
-                            {socialLinks.map((s) => (
-                                <a
-                                    key={s.name}
-                                    href={s.href}
-                                    className="w-10 h-10 rounded-lg border border-white/5 bg-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:border-blue-500/50 hover:bg-blue-500/10 transition-all duration-300"
-                                    aria-label={s.name}
-                                >
-                                    {s.icon}
-                                </a>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Links Columns */}
-                    <div className="lg:col-span-2">
-                        <h4 className="text-white font-bold text-xs uppercase tracking-[0.3em] mb-8">Navigation</h4>
-                        <ul className="space-y-4">
-                            {quickLinks.map((l) => (
-                                <li key={l.name}>
-                                    <NextLink href={l.href} className="text-gray-500 hover:text-blue-400 text-sm transition-colors duration-200 flex items-center gap-2 group">
-                                        <div className="w-1.5 h-[1px] bg-gray-800 group-hover:w-3 group-hover:bg-blue-400 transition-all duration-300" />
-                                        {l.name}
-                                    </NextLink>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    <div className="lg:col-span-3">
-                        <h4 className="text-white font-bold text-xs uppercase tracking-[0.3em] mb-8">Expertise</h4>
-                        <div className="grid grid-cols-1 gap-4">
-                            {serviceLinks.map((s) => (
-                                <div key={s} className="flex items-center gap-3 text-gray-500 hover:text-white text-sm transition-colors cursor-default group">
-                                    <div className="w-1 h-1 rounded-full bg-blue-500/50 group-hover:bg-blue-400" />
-                                    {s}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Contact Info */}
-                    <div className="lg:col-span-3">
-                        <h4 className="text-white font-bold text-xs uppercase tracking-[0.3em] mb-8">Get in Touch</h4>
-                        <div className="space-y-6">
-                            <a href="mailto:s.techwired@gmail.com" className="group flex items-start gap-4 p-4 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] transition-all duration-300">
-                                <div className="p-2 rounded-lg bg-blue-500/10 text-blue-400 group-hover:bg-blue-500 group-hover:text-black transition-colors">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-                                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
-                                    </svg>
-                                </div>
-                                <div className="text-sm">
-                                    <p className="text-gray-500 text-[10px] uppercase font-bold tracking-widest mb-1">Email</p>
-                                    <p className="text-gray-300 group-hover:text-white transition-colors">s.techwired@gmail.com</p>
-                                </div>
-                            </a>
-                            <a href="https://wa.me/9779866243388" target="_blank" rel="noopener noreferrer" className="group flex items-start gap-4 p-4 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] transition-all duration-300">
-                                <div className="p-2 rounded-lg bg-green-500/10 text-green-500 group-hover:bg-green-500 group-hover:text-black transition-colors">
-                                    <svg viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4">
-                                        <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
-                                    </svg>
-                                </div>
-                                <div className="text-sm">
-                                    <p className="text-gray-500 text-[10px] uppercase font-bold tracking-widest mb-1">WhatsApp</p>
-                                    <p className="text-gray-300 group-hover:text-white transition-colors">+977 9866243388</p>
-                                </div>
-                            </a>
-                            <div className="flex items-start gap-4 p-4">
-                                <div className="p-2 rounded-lg bg-gray-500/10 text-gray-400">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-                                    </svg>
-                                </div>
-                                <div className="text-sm">
-                                    <p className="text-gray-500 text-[10px] uppercase font-bold tracking-widest mb-1">Location</p>
-                                    <p className="text-gray-300 leading-relaxed">Remote</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Bottom Bar */}
-                <div className="pt-10 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
-                    <div className="text-gray-500 text-xs font-light tracking-wide flex flex-wrap justify-center gap-2 items-center">
-                        <span>© 2026 Techwired Solutions.</span>
-                        <span className="hidden md:inline text-white/10">|</span>
-                        <span>Designed & Developed by <span className="text-gray-300 font-bold">Techwired Team</span></span>
-                        <span className="hidden md:inline text-white/10">|</span>
-                        <span className="flex items-center gap-1">Built with <span className="text-red-500">❤️</span> in Nepal</span>
-                    </div>
-
-                    <button 
-                        onClick={scrollToTop}
-                        className="group flex items-center gap-3 px-6 py-3 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition-all duration-300"
-                    >
-                        <span className="text-xs font-bold uppercase tracking-widest text-gray-400 group-hover:text-white">Slide to Top</span>
-                        <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center group-hover:bg-blue-500 transition-colors">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-blue-400 group-hover:text-black">
-                                <line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>
-                            </svg>
-                        </div>
-                    </button>
-                </div>
-            </div>
-
-            {/* Floating Background Text */}
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 select-none pointer-events-none z-[-1] opacity-[0.02]">
-                <h2 className="text-[12vw] font-black leading-none whitespace-nowrap text-white">TECHWIRED</h2>
-            </div>
-         </div>
-      
     </section>
   );
 }

@@ -9,11 +9,13 @@ import ServicesSection from '@/components/sections/ServicesSection';
 import ProjectsSection from '@/components/sections/ProjectsSection';
 import ContactSection from '@/components/sections/ContactSection';
 import PartnersSection from '@/components/sections/PartnersSection';
+import FooterSection from '@/components/sections/FooterSection';
+
 export default function Home() {
   useSmoothScroll();
 
   return (
-    <main className="min-h-screen" style={{ background: 'transparent' }}>
+    <main className="min-h-screen" style={{ background: '#000000' }}>
       <Navbar />
       <HeroSection />
       <AboutSection />
@@ -22,6 +24,7 @@ export default function Home() {
       <ProjectsSection />
       <ContactSection />
       <PartnersSection />
+      <FooterSection />
     </main>
   );
 }
