@@ -70,7 +70,7 @@ const journey = [
 
 /* whyChoose data moved to FeaturesSection (unified) */
 
-const skills = ['React / Next.js', 'React Native', 'Node.js', 'GSAP', 'Figma', 'SEO'];
+const skills = ['React / Next.js', 'React Native', 'Node.js', 'GSAP', 'Figma', 'SEO', 'Python',''];
 
 export default function AboutSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -120,19 +120,32 @@ export default function AboutSection() {
                   <div className="relative w-36 h-36"><Image src="/images/logo.png" alt="Techwired Solutions logo" fill className="object-contain" /></div>
                 </div>
               </div>
-              {/* Chips */}
-              {[
-                { label: '🌐 Web Dev',  color: '#3B82F6', top: -28,   right: -28, delay: '0s' },
-                { label: '📱 Mobile',   color: '#A855F7', bottom: -28, left: -28,  delay: '1.2s' },
-                { label: '🎨 Design',   color: '#00D4FF', top: '50%',  right: -52, delay: '2s' },
-              ].map((c) => (
-                <div key={c.label}
-                  className="absolute px-3 py-2 rounded-xl text-xs font-bold animate-float"
+              {/* Chips — positioned on all 4 sides */}
+              {([
+                // Top row
+                { label: '🌐 Web Dev',      color: '#3B82F6', style: { top: -32,    right: 0 }              },
+                { label: '⚡ Automation',   color: '#FACC15', style: { top: -32,    left:  0 }              },
+                // Right column
+                { label: '🎨 Design',       color: '#00D4FF', style: { top: '28%',  right: -84 }            },
+                { label: '🎯 Ads',          color: '#F97316', style: { bottom: '20%', right: -72 }          },
+                // Bottom row
+                { label: '📊 SEO',          color: '#10B981', style: { bottom: -32, right: 0 }              },
+                { label: '📱 Mobile',       color: '#A855F7', style: { bottom: -32, left:  0 }              },
+                // Left column
+                { label: '📣 Marketing',    color: '#EC4899', style: { top: '28%',  left: -92 }             },
+                { label: '🤳 Social Media', color: '#8B5CF6', style: { bottom: '20%', left: -92 }           },
+              ] as Array<{ label: string; color: string; style: React.CSSProperties }>).map((c, i) => (
+                <div
+                  key={c.label}
+                  className="absolute px-3 py-1.5 rounded-xl text-xs font-bold animate-float whitespace-nowrap"
                   style={{
-                    background: `${c.color}15`, border: `1px solid ${c.color}30`, color: c.color,
-                    top: c.top, right: c.right, bottom: (c as any).bottom, left: (c as any).left,
-                    animationDelay: c.delay, transform: c.top === '50%' ? 'translateY(-50%)' : undefined,
-                  }}>
+                    background: `${c.color}15`,
+                    border: `1px solid ${c.color}30`,
+                    color: c.color,
+                    animationDelay: `${i * 0.4}s`,
+                    ...c.style,
+                  }}
+                >
                   {c.label}
                 </div>
               ))}
