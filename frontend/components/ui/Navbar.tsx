@@ -116,7 +116,7 @@ export default function Navbar() {
           </Link>
 
           {/* ── Desktop nav links ── */}
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden md:flex items-center gap-2">
             {navLinks.map((link) => {
               const isActive = activeLink === link.name;
               return (
@@ -124,7 +124,7 @@ export default function Navbar() {
                   key={link.name}
                   href={link.href}
                   onClick={() => setActiveLink(link.name)}
-                  className="relative px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 group"
+                  className="relative px-6 py-2 rounded-full text-sm font-medium transition-all duration-200 group"
                   style={{
                     fontFamily: "'Space Grotesk', sans-serif",
                     color: isActive ? '#85adff' : 'rgba(242,245,253,0.65)',
