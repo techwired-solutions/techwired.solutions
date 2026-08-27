@@ -1,194 +1,58 @@
 # Techwired Solutions
 
-A premium, futuristic, 3D animated full-stack website for Techwired Solutions - a Nepal-based digital agency.
+Marketing site for [Techwired Solutions](https://techwiredsolutions.com.np) — a
+technology company from Kathmandu that builds and operates its own products
+(Linkypot, Krisearch, Gharbari) and ships digital work for clients.
 
-## 🚀 Technology Stack
+Single-page site, dark "Air"-style design system: type-driven, flat surfaces,
+ghost buttons, no gradients.
 
-### Frontend
-- **Next.js 15** - React framework with App Router
-- **Tailwind CSS v4** - Utility-first CSS framework
-- **Framer Motion** - Animation library
-- **GSAP + ScrollTrigger** - Advanced scroll animations
-- **React Three Fiber + Drei** - 3D graphics with Three.js
-- **TypeScript** - Type-safe JavaScript
+## Stack
 
-### Backend
-- **FastAPI** - Modern Python web framework
-- **PostgreSQL** - Relational database
-- **SQLAlchemy** - ORM
-- **JWT** - Authentication
-- **SMTP** - Email service
+- [Next.js 16](https://nextjs.org) (App Router, Turbopack) · React 19
+- Tailwind CSS v4
+- `lucide-react` for icons · `framer-motion` for scroll reveals
+- Deployed on Vercel
 
-## 📁 Project Structure
+## Develop
 
-```
-techwired_solutions/
-├── frontend/                 # Next.js application
-│   ├── app/                 # App router pages
-│   ├── components/          # React components
-│   │   ├── 3d/             # Three.js 3D scenes
-│   │   ├── sections/       # Page sections
-│   │   ├── ui/             # UI components
-│   │   └── forms/          # Form components
-│   └── public/             # Static assets
-│
-└── backend/                 # FastAPI application
-    ├── app/
-    │   ├── models/         # SQLAlchemy models
-    │   ├── schemas/        # Pydantic schemas
-    │   ├── routers/        # API endpoints
-    │   ├── services/       # Business logic
-    │   └── main.py         # FastAPI app
-    └── requirements.txt    # Python dependencies
-```
-
-## 🛠️ Setup Instructions
-
-### Prerequisites
-- Node.js 18+ and npm
-- Python 3.11+
-- PostgreSQL 14+
-
-### Backend Setup
-
-1. **Navigate to backend directory:**
-   ```bash
-   cd backend
-   ```
-
-2. **Create virtual environment:**
-   ```bash
-   python -m venv venv
-   
-   # Windows
-   venv\Scripts\activate
-   
-   # Linux/Mac
-   source venv/bin/activate
-   ```
-
-3. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Configure environment variables:**
-   ```bash
-   cp .env.example .env
-   ```
-   
-   Edit `.env` and update:
-   - `DATABASE_URL` - Your PostgreSQL connection string
-   - `JWT_SECRET` - Random secret key for JWT
-   - `SMTP_PASSWORD` - Gmail app-specific password
-   - Other settings as needed
-
-5. **Initialize database:**
-   ```bash
-   python -m app.init_db
-   ```
-
-6. **Run the server:**
-   ```bash
-   uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-   ```
-
-   API will be available at: http://localhost:8000
-   API docs: http://localhost:8000/docs
-
-### Frontend Setup
-
-1. **Navigate to frontend directory:**
-   ```bash
-   cd frontend
-   ```
-
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-3. **Install additional 3D and animation libraries:**
-   ```bash
-   npm install @react-three/fiber @react-three/drei three framer-motion gsap
-   npm install react-hook-form zod axios
-   npm install @types/three --save-dev
-   ```
-
-4. **Configure environment variables:**
-   ```bash
-   # Create .env.local
-   echo "NEXT_PUBLIC_API_URL=http://localhost:8000" > .env.local
-   ```
-
-5. **Run development server:**
-   ```bash
-   npm run dev
-   ```
-
-   Frontend will be available at: http://localhost:3000
-
-## 📧 Email Configuration
-
-To enable email functionality, you need to set up Gmail App Password:
-
-1. Go to your Google Account settings
-2. Enable 2-Factor Authentication
-3. Generate an App Password for "Mail"
-4. Use this password in `backend/.env` as `SMTP_PASSWORD`
-
-## 🔐 Admin Access
-
-Default admin credentials (change after first login):
-- **Username:** admin
-- **Password:** changeme123
-
-Access admin panel at: http://localhost:3000/admin
-
-## 🎨 Design System
-
-### Colors
-- **Primary:** Electric Violet (#8B5CF6) → Neon Purple (#C084FC)
-- **Secondary:** Tech Yellow (#FACC15)
-- **Background (Dark):** Deep Gray (#0A0A0A)
-
-### Typography
-- **Headings:** Geist Sans Bold
-- **Body:** Geist Sans Regular
-- **Code:** Geist Mono
-
-## 📦 Deployment
-
-### Frontend (Vercel)
 ```bash
-cd frontend
-vercel deploy --prod
+npm install
+npm run dev
 ```
 
-### Backend (Fly.io)
+Open <http://localhost:3000>.
+
 ```bash
-cd backend
-fly launch
-fly deploy
+npm run build   # production build
+npm run lint    # eslint
 ```
 
-## 🧪 API Endpoints
+## Contact form
 
-### Public
-- `POST /api/inquiry` - Submit contact form
+`POST /api/contact` sends enquiries via [Resend](https://resend.com) when
+`RESEND_API_KEY` is set. Without it the endpoint returns `503 not_configured`
+and the form falls back to a `mailto:` link. See [`.env.example`](.env.example).
 
-### Admin (Protected)
-- `POST /api/auth/login` - Admin login
-- `GET /api/admin/inquiries` - List all inquiries
-- `GET /api/admin/inquiries/{id}` - Get single inquiry
-- `PATCH /api/admin/inquiries/{id}` - Update inquiry
+Set these in Vercel → Project → Settings → Environment Variables:
 
-## 📝 License
+| Variable         | Notes                                             |
+| ---------------- | ------------------------------------------------- |
+| `RESEND_API_KEY` | optional; enables real email delivery             |
+| `CONTACT_TO`     | recipient address (default `hello@…com.np`)       |
+| `CONTACT_FROM`   | verified Resend sender                            |
 
-© 2025 Techwired Solutions — Built with ❤️ in Nepal
+## Structure
 
-## 🤝 Contact
+```
+app/            routes, layout, /api/contact, robots + sitemap
+components/
+  site/         Nav, Footer
+  sections/     Hero, Marquee, Capabilities, Ventures, Work, About, Contact
+  ui/           Button, Container, Logo, Reveal, SectionHeader, UnderlineLink
+lib/site.ts     all site copy + the companies / work lists
+public/images/work/  site screenshots
+```
 
-- **Email:** s.techwired@gmail.com
-- **Phone:** +977 9843641508
-- **Location:** Budhanilkantha, Kathmandu, Nepal
+Editing content — companies, client work, capabilities, contact details — is
+done in [`lib/site.ts`](lib/site.ts).
