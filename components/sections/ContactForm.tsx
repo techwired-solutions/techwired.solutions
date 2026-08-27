@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Button";
 type Status = "idle" | "sending" | "ok" | "error";
 
 const inputBase =
-  "w-full rounded-input border border-black/10 bg-white px-3 py-2.5 text-[15px] text-ink outline-none transition-colors placeholder:text-ink/35 focus:border-signal";
+  "w-full rounded-input border border-black/10 bg-whiteout px-3 py-2.5 text-[15px] text-ink outline-none transition-colors placeholder:text-ink/35 focus:border-signal-blue";
 
 export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
@@ -61,8 +61,8 @@ export function ContactForm() {
 
   if (status === "ok") {
     return (
-      <div className="flex flex-col items-start gap-3 rounded-button border border-black/10 bg-white p-6 text-ink">
-        <Check className="h-6 w-6 text-signal" strokeWidth={2} />
+      <div className="flex flex-col items-start gap-3 rounded-button border border-black/10 bg-whiteout p-6 text-ink">
+        <Check className="h-6 w-6 text-signal-blue" strokeWidth={2} />
         <p className="text-[16px] font-medium text-ink">Message sent.</p>
         <p className="text-[14px] text-ink/60">
           Thanks for reaching out — we&apos;ll reply within a day or two.
@@ -114,7 +114,6 @@ export function ContactForm() {
         <Button
           type="submit"
           variant="solid"
-          tone="onLight"
           disabled={status === "sending"}
           className="disabled:opacity-50"
         >

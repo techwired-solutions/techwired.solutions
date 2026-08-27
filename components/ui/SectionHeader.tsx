@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { Reveal } from "./Reveal";
 
 /* Feature section header: small Control label + a heading that mixes
-   upright (.tnt) with one cursive word. Centre-aligned on the dark canvas. */
+   upright (.tnt) with one cursive word. */
 export function SectionHeader({
   label,
   children,
@@ -22,10 +22,10 @@ export function SectionHeader({
         className,
       )}
     >
-      <span className="text-[13px] font-medium uppercase tracking-[0.16em] text-twilight">
+      <span className="text-[13px] font-medium uppercase tracking-[0.16em] text-twilight-blue">
         {label}
       </span>
-      <h2 className="tnt max-w-[18ch] text-[clamp(28px,5vw,52px)] text-whiteout sm:max-w-[22ch]">
+      <h2 className="tnt max-w-[18ch] text-[clamp(28px,5vw,52px)] sm:max-w-[24ch]">
         {children}
       </h2>
     </Reveal>

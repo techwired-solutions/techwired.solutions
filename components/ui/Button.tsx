@@ -3,7 +3,6 @@ import { cn } from "@/lib/utils";
 
 type Common = {
   variant?: "ghost" | "solid";
-  tone?: "onDark" | "onLight";
   className?: string;
   children: React.ReactNode;
 };
@@ -11,16 +10,15 @@ type Common = {
 const base =
   "inline-flex items-center justify-center gap-2 rounded-button px-4 py-2.5 text-[14px] font-medium leading-none transition-colors duration-200 select-none";
 
-function classesFor(variant: "ghost" | "solid", tone: "onDark" | "onLight") {
+/* Air rule: buttons are ghost (transparent + border) or a light/haze fill —
+   never a solid saturated colour. Both variants below live on the light canvas. */
+function classesFor(variant: "ghost" | "solid") {
+  // "Solid Light Button": haze fill, ink text, ink border.
   if (variant === "solid") {
-    return tone === "onDark"
-      ? "bg-whiteout text-ink border border-whiteout hover:bg-transparent hover:text-whiteout"
-      : "bg-ink text-whiteout border border-ink hover:bg-transparent hover:text-ink";
+    return "bg-haze text-ink border border-ink hover:bg-ink hover:text-whiteout";
   }
-  // ghost
-  return tone === "onDark"
-    ? "border border-whiteout/70 text-whiteout hover:border-whiteout hover:bg-whiteout/[0.06]"
-    : "border border-ink/25 text-ink hover:border-ink hover:bg-ink/[0.04]";
+  // Ghost: transparent + border.
+  return "border border-ink/30 text-ink hover:border-ink hover:bg-ink/[0.05]";
 }
 
 type ButtonAsButton = Common &
@@ -35,15 +33,8 @@ type ButtonAsLink = Common &
   };
 
 export function Button(props: ButtonAsButton | ButtonAsLink) {
-  const {
-    variant = "ghost",
-    tone = "onDark",
-    className,
-    children,
-    ...rest
-  } = props;
-
-  const cls = cn(base, classesFor(variant, tone), className);
+  const { variant = "ghost", className, children, ...rest } = props;
+  const cls = cn(base, classesFor(variant), className);
 
   if (rest && "as" in rest && rest.as === "a") {
     const { as: _as, ...anchorProps } = rest as ButtonAsLink;

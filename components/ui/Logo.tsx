@@ -25,9 +25,9 @@ export function LogoMark({ className }: { className?: string }) {
 
 export function Wordmark({ className }: { className?: string }) {
   return (
-    <span className={cn("flex items-center gap-2.5", className)}>
+    <span className={cn("flex items-center gap-2.5 text-ink", className)}>
       <LogoMark />
-      <span className="text-[15px] font-medium tracking-tight text-whiteout">
+      <span className="text-[15px] font-medium tracking-tight">
         Techwired&nbsp;Solutions
       </span>
     </span>

@@ -8,24 +8,22 @@ import { Reveal } from "@/components/ui/Reveal";
 
 export function Ventures() {
   return (
-    <section id="companies" className="py-14 sm:py-20">
+    <section id="companies" className="border-y border-black/10 bg-haze py-16 sm:py-24">
       <Container className="flex flex-col gap-12 sm:gap-16">
         <SectionHeader label="Our companies">
           Products we design, build, and{" "}
           <span className="cursive text-[1.15em]">keep</span> running
         </SectionHeader>
 
-        <div className="flex flex-col gap-12 sm:gap-16">
+        <div className="flex flex-col gap-10 sm:gap-14">
           {ventures.map((v, i) => (
             <Reveal
               key={v.name}
-              className={cn(
-                "grid items-center gap-8 sm:gap-12 lg:grid-cols-2",
-              )}
+              className={cn("grid items-center gap-6 sm:gap-12 lg:grid-cols-2")}
             >
               <div
                 className={cn(
-                  "overflow-hidden rounded-image border border-white/10",
+                  "overflow-hidden rounded-image border border-black/10 bg-whiteout",
                   i % 2 === 1 && "lg:order-2",
                 )}
               >
@@ -46,12 +44,10 @@ export function Ventures() {
                   i % 2 === 1 && "lg:order-1",
                 )}
               >
-                <span className="text-[13px] font-medium uppercase tracking-[0.16em] text-twilight">
+                <span className="text-[13px] font-medium uppercase tracking-[0.16em] text-twilight-blue">
                   {v.tag}
                 </span>
-                <h3 className="tnt text-[clamp(28px,4vw,40px)] text-whiteout">
-                  {v.name}
-                </h3>
+                <h3 className="tnt text-[clamp(28px,4vw,40px)]">{v.name}</h3>
                 <p className="max-w-[42ch] text-[16px] leading-[1.55]">
                   {v.blurb}
                 </p>

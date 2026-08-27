@@ -7,7 +7,7 @@ import { Reveal } from "@/components/ui/Reveal";
 
 export function Work() {
   return (
-    <section id="work" className="py-14 sm:py-20">
+    <section id="work" className="py-16 sm:py-24">
       <Container className="flex flex-col gap-14">
         <SectionHeader label="Selected work">
           Sites we&apos;ve built{" "}
@@ -17,7 +17,7 @@ export function Work() {
         <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2">
           {work.map((item, i) => (
             <Reveal key={item.name} delay={(i % 2) * 0.06} className="flex flex-col gap-4">
-              <div className="overflow-hidden rounded-image border border-white/10">
+              <div className="overflow-hidden rounded-image border border-black/10 bg-whiteout">
                 <div className="relative aspect-[16/10]">
                   <Image
                     src={item.image}
@@ -29,10 +29,8 @@ export function Work() {
                 </div>
               </div>
               <div className="flex flex-col gap-1">
-                <h3 className="text-[18px] font-medium text-whiteout">
-                  {item.name}
-                </h3>
-                <p className="text-[14px] text-white/55">{item.tag}</p>
+                <h3 className="text-[18px] font-medium text-ink">{item.name}</h3>
+                <p className="text-[14px] text-ink/55">{item.tag}</p>
               </div>
               {item.href && (
                 <UnderlineLink href={item.href} external arrow>

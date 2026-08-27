@@ -5,21 +5,21 @@ import { Reveal } from "@/components/ui/Reveal";
 
 export function Hero() {
   return (
-    <section className="relative flex min-h-[68svh] items-center pt-[72px]">
+    <section className="relative flex min-h-[58svh] items-center pt-[72px]">
       <Container className="py-14 sm:py-20">
-        <div className="flex max-w-[56rem] flex-col gap-7">
+        <div className="flex max-w-[64rem] flex-col gap-7">
           <Reveal>
-            <span className="text-[13px] font-medium uppercase tracking-[0.18em] text-twilight">
+            <span className="text-[13px] font-medium uppercase tracking-[0.18em] text-twilight-blue">
               Techwired Solutions — Kathmandu, Nepal
             </span>
           </Reveal>
 
           <Reveal delay={0.05}>
             <h1 className="flex flex-col gap-1">
-              <span className="display text-[clamp(2.75rem,10vw,7.25rem)]">
+              <span className="display text-[clamp(3rem,13vw,9.5rem)]">
                 Built in Nepal.
               </span>
-              <span className="cursive text-[clamp(1.75rem,5.5vw,3.5rem)] leading-none text-whiteout">
+              <span className="cursive text-[clamp(1.9rem,6.5vw,4rem)] leading-none text-signal-blue">
                 Shipped everywhere.
               </span>
             </h1>
@@ -35,10 +35,10 @@ export function Hero() {
 
           <Reveal delay={0.15}>
             <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
-              <Button as="a" href="#contact" variant="ghost" tone="onDark">
+              <Button as="a" href="#contact" variant="ghost">
                 Start a project
               </Button>
-              <UnderlineLink href="#companies" tone="whiteout" arrow>
+              <UnderlineLink href="#companies" tone="ink" arrow>
                 See what we&apos;ve built
               </UnderlineLink>
             </div>

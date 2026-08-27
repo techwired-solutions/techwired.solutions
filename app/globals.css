@@ -1,24 +1,35 @@
 @import "tailwindcss";
 
 /* ============================================================
-   TECHWIRED SOLUTIONS — "Air" style system
-   Dark canvas · type-driven · flat surfaces · ghost buttons
+   TECHWIRED SOLUTIONS — "Air" style system, light canvas
+   White / haze surfaces · ink text · type-driven · flat · no gradients
    ============================================================ */
 
 @theme {
-  /* Colours */
+  /* Colours (exact Air tokens) */
   --color-whiteout: #ffffff;
   --color-haze: #f5f5f5;
   --color-ink: #1b1b1b;
-  --color-void: #000000;
-  --color-twilight: #426188;
-  --color-signal: #2b7fff;
+  --color-black-void: #000000;
+  --color-twilight-blue: #426188;
+  --color-signal-blue: #2b7fff;
 
-  /* Muted text / hairlines on the dark canvas */
-  --color-fog: rgba(255, 255, 255, 0.6);
-  --color-fog-dim: rgba(255, 255, 255, 0.42);
+  /* Type families — "Control" is proprietary; these are the documented subs */
+  --font-control: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, sans-serif;
+  --font-control-compressed: var(--font-anton), "Arial Narrow", system-ui,
+    sans-serif;
+  --font-control-cursive: var(--font-caveat), "Segoe Script", ui-serif, cursive;
+  --font-control-tnt: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
-  /* Radii */
+  /* Type scale */
+  --text-caption: 13px;
+  --text-body: 16px;
+  --text-subheading: 20px;
+  --text-heading: 32px;
+  --text-heading-lg: 56px;
+
+  /* Radii (4 / 8 / 11 / 12 / 14 — no others) */
   --radius-input: 4px;
   --radius-button: 8px;
   --radius-image: 11px;
@@ -27,11 +38,9 @@
   --radius-pill: 9999px;
 }
 
-/* ---- Base -------------------------------------------------------------
-   Layered so Tailwind utilities always win over these element defaults. */
 @layer base {
   :root {
-    color-scheme: dark;
+    color-scheme: light;
   }
 
   html {
@@ -41,10 +50,9 @@
   }
 
   body {
-    background: var(--color-void);
-    color: var(--color-whiteout);
-    font-family: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
-      "Segoe UI", Roboto, sans-serif;
+    background: var(--color-whiteout);
+    color: var(--color-ink);
+    font-family: var(--font-control);
     font-weight: 500;
     font-size: 16px;
     line-height: 1.5;
@@ -52,7 +60,6 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Anchor offset for the fixed nav */
   :where(section[id], span[id]) {
     scroll-margin-top: 96px;
   }
@@ -60,35 +67,32 @@
   /* Calmer long-form default; any text-* utility overrides both. */
   p {
     font-weight: 400;
-    color: var(--color-fog);
+    color: color-mix(in oklab, var(--color-ink) 68%, transparent);
   }
 
   ::selection {
-    background: rgba(43, 127, 255, 0.28);
-    color: var(--color-whiteout);
+    background: color-mix(in oklab, var(--color-signal-blue) 22%, transparent);
+    color: var(--color-ink);
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-signal);
+    outline: 2px solid var(--color-signal-blue);
     outline-offset: 2px;
   }
 }
 
-/* ---- Display type --------------------------------------------------- */
 @layer components {
   .display {
-    font-family: var(--font-anton), "Arial Narrow", "Helvetica Neue Condensed",
-      system-ui, sans-serif;
+    font-family: var(--font-control-compressed);
     font-weight: 400; /* Anton ships a single weight */
     text-transform: uppercase;
     line-height: 0.86;
     letter-spacing: -0.005em;
-    color: var(--color-whiteout);
+    color: var(--color-ink);
   }
 
   .cursive {
-    font-family: var(--font-caveat), "Segoe Script", "Bradley Hand", ui-serif,
-      cursive;
+    font-family: var(--font-control-cursive);
     font-weight: 500;
     text-transform: none;
     letter-spacing: 0;
@@ -96,31 +100,15 @@
   }
 
   .tnt {
-    font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-control-tnt);
     font-weight: 500;
     letter-spacing: -0.02em;
     line-height: 1.05;
+    color: var(--color-ink);
   }
 }
 
-/* ---- Utilities ---------------------------------------------------- */
-
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-::-webkit-scrollbar-track {
-  background: #000;
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.14);
-  border: 3px solid #000;
-  border-radius: 9999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.24);
-}
-
+/* Marquee */
 @keyframes tw-marquee {
   from {
     transform: translateX(0);
@@ -131,7 +119,7 @@
 }
 
 .marquee-track {
-  animation: tw-marquee 38s linear infinite;
+  animation: tw-marquee 40s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -141,4 +129,21 @@
   .marquee-track {
     animation: none;
   }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-whiteout);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.16);
+  border: 3px solid var(--color-whiteout);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.28);
 }

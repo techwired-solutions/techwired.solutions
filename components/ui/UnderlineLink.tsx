@@ -3,7 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Props = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
-  tone?: "signal" | "whiteout" | "ink";
+  tone?: "signal" | "ink";
   arrow?: boolean;
   external?: boolean;
 };
@@ -16,12 +16,7 @@ export function UnderlineLink({
   children,
   ...rest
 }: Props) {
-  const color =
-    tone === "signal"
-      ? "text-signal"
-      : tone === "ink"
-        ? "text-ink"
-        : "text-whiteout";
+  const color = tone === "ink" ? "text-ink" : "text-signal-blue";
 
   return (
     <a

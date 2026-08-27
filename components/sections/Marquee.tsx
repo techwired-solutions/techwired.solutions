@@ -5,9 +5,9 @@ export function Marquee() {
   const items = [...roster, ...roster];
 
   return (
-    <section className="border-y border-white/10 py-10">
+    <section className="border-y border-black/10 bg-haze py-10">
       <Container>
-        <p className="mb-7 text-center text-[13px] font-medium uppercase tracking-[0.16em] text-white/40">
+        <p className="mb-7 text-center text-[13px] font-medium uppercase tracking-[0.16em] text-ink/40">
           Products &amp; projects
         </p>
       </Container>
@@ -25,7 +25,7 @@ export function Marquee() {
           {items.map((name, i) => (
             <li
               key={`${name}-${i}`}
-              className="text-[18px] font-medium tracking-tight text-white/55"
+              className="text-[18px] font-medium tracking-tight text-ink/55"
             >
               {name}
             </li>

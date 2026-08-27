@@ -6,11 +6,11 @@ import { ContactForm } from "./ContactForm";
 
 export function Contact() {
   return (
-    <section id="contact" className="py-14 sm:py-20">
+    <section id="contact" className="py-16 sm:py-24">
       <Container>
         <Reveal className="grid gap-8 rounded-card bg-haze p-6 text-ink sm:p-10 lg:grid-cols-2 lg:gap-16 lg:p-14">
           <div className="flex flex-col gap-5">
-            <span className="text-[13px] font-medium uppercase tracking-[0.16em] text-twilight">
+            <span className="text-[13px] font-medium uppercase tracking-[0.16em] text-twilight-blue">
               Contact
             </span>
             <h2 className="tnt text-[clamp(28px,4.5vw,44px)] text-ink">

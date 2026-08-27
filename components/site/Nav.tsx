@@ -32,8 +32,8 @@ export function Nav() {
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
         scrolled || open
-          ? "border-b border-white/10 bg-black/80 backdrop-blur-md"
-          : "border-b border-transparent",
+          ? "border-b border-black/10 bg-whiteout/85 backdrop-blur-md"
+          : "border-b border-transparent bg-transparent",
       )}
     >
       <Container className="flex h-[72px] items-center justify-between">
@@ -46,7 +46,7 @@ export function Nav() {
             <a
               key={item.href}
               href={item.href}
-              className="rounded-button px-3 py-2 text-[14px] font-medium text-white/70 transition-colors hover:text-whiteout"
+              className="rounded-button px-3 py-2 text-[14px] font-medium text-ink/60 transition-colors hover:text-ink"
             >
               {item.label}
             </a>
@@ -54,14 +54,14 @@ export function Nav() {
         </nav>
 
         <div className="hidden md:block">
-          <Button as="a" href="#contact" variant="ghost" tone="onDark">
+          <Button as="a" href="#contact" variant="ghost">
             Start a project
           </Button>
         </div>
 
         <button
           type="button"
-          className="-mr-2 p-2 text-whiteout md:hidden"
+          className="-mr-2 p-2 text-ink md:hidden"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
@@ -77,7 +77,7 @@ export function Nav() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
-            className="border-t border-white/10 bg-black md:hidden"
+            className="border-t border-black/10 bg-whiteout md:hidden"
           >
             <Container className="flex flex-col gap-1 py-4">
               {nav.map((item) => (
@@ -85,7 +85,7 @@ export function Nav() {
                   key={item.href}
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="rounded-button px-3 py-3 text-[16px] font-medium text-white/80 transition-colors hover:bg-white/5 hover:text-whiteout"
+                  className="rounded-button px-3 py-3 text-[16px] font-medium text-ink/70 transition-colors hover:bg-haze hover:text-ink"
                 >
                   {item.label}
                 </a>
@@ -95,7 +95,6 @@ export function Nav() {
                   as="a"
                   href="#contact"
                   variant="solid"
-                  tone="onDark"
                   onClick={() => setOpen(false)}
                   className="w-full"
                 >
