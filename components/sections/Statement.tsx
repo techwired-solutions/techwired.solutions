@@ -14,13 +14,13 @@ export function Statement({
   return (
     <section
       className={cn(
-        "overflow-hidden px-6 py-24 sm:py-32",
+        "relative z-10 overflow-hidden px-5 py-28 sm:py-40",
         tone === "night" ? "bg-night text-whiteout" : "bg-page text-ink",
         className,
       )}
     >
-      <Reveal className="mx-auto max-w-[1400px]">
-        <p className="display text-[clamp(2.75rem,9vw,10rem)]">{children}</p>
+      <Reveal className="mx-auto max-w-[1600px]">
+        <p className="display text-[clamp(3rem,12vw,15rem)]">{children}</p>
       </Reveal>
     </section>
   );

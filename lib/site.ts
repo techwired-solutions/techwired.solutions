@@ -7,7 +7,7 @@ export const site = {
   email: "hello@techwiredsolutions.com.np",
   github: "https://github.com/techwired-solutions",
   founder: "Sudip Parajuli",
-  tagline: "A technology company that builds and runs its own products.",
+  tagline: "We build and run our own products.",
 };
 
 export const nav = [
@@ -17,51 +17,60 @@ export const nav = [
   { label: "Contact", href: "#contact" },
 ];
 
-/* ---- Hero sky modes (time of day) ---------------------------------- */
+/* ---- Hero: one sky, four times of day (a re-light, not a new photo) --- */
 
 export type ModeId = "sunrise" | "day" | "sunset" | "night";
 
-export const modes: {
+export type Mode = {
   id: ModeId;
   label: string;
   icon: LucideIcon;
-  image: string;
-  /* nav / hero foreground tint while this sky is active */
-  fg: string;
-  /* eyebrow + accents over the sky */
-  accent: string;
-}[] = [
+  /* CSS filter applied to the single sky image */
+  filter: string;
+  /* extra wash laid over the sky */
+  wash: string;
+  /* light colour fed to the 3D glass */
+  light: string;
+  /* ambient colour fed to the 3D glass */
+  ambient: string;
+};
+
+export const modes: Mode[] = [
   {
     id: "sunrise",
     label: "Sunrise",
     icon: Sunrise,
-    image: "/images/sky/sunrise.jpg",
-    fg: "#1b1b1b",
-    accent: "#7c5f8f",
+    filter: "saturate(1.05) hue-rotate(-14deg) brightness(1.02) contrast(1.02)",
+    wash: "linear-gradient(180deg, rgba(80,60,110,0.24) 0%, rgba(255,214,170,0.10) 40%, rgba(255,200,160,0.16) 100%)",
+    light: "#ffd9b8",
+    ambient: "#8a93c4",
   },
   {
     id: "day",
     label: "Day",
     icon: Sun,
-    image: "/images/sky/day.jpg",
-    fg: "#1b1b1b",
-    accent: "#2b6cb0",
+    filter: "saturate(1.14) contrast(1.05)",
+    wash: "linear-gradient(180deg, rgba(20,40,80,0.14) 0%, rgba(255,255,255,0) 26%, rgba(255,255,255,0) 64%, rgba(66,97,136,0.20) 100%)",
+    light: "#ffffff",
+    ambient: "#bcd0ea",
   },
   {
     id: "sunset",
     label: "Sunset",
     icon: Sunset,
-    image: "/images/sky/sunset.jpg",
-    fg: "#ffffff",
-    accent: "#ffd9b0",
+    filter: "saturate(1.4) hue-rotate(-30deg) brightness(0.92) contrast(1.08)",
+    wash: "linear-gradient(180deg, rgba(60,20,70,0.34) 0%, rgba(255,120,40,0.16) 50%, rgba(120,40,90,0.30) 100%)",
+    light: "#ff9d5c",
+    ambient: "#7a4b6e",
   },
   {
     id: "night",
     label: "Night",
     icon: Moon,
-    image: "/images/sky/night.jpg",
-    fg: "#ffffff",
-    accent: "#9db8e8",
+    filter: "saturate(0.5) brightness(0.34) contrast(1.12) hue-rotate(8deg)",
+    wash: "linear-gradient(180deg, rgba(10,20,50,0.45), rgba(4,10,30,0.60))",
+    light: "#8fb3ff",
+    ambient: "#26325c",
   },
 ];
 

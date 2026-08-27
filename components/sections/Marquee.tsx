@@ -5,10 +5,10 @@ export function Marquee() {
   const items = [...roster, ...roster, ...roster, ...roster];
 
   return (
-    <section className="border-b border-ink/10 bg-page py-12">
+    <section className="relative z-10 border-y border-ink/10 bg-page py-12">
       <Container>
         <p className="mb-8 text-center text-[13px] font-medium uppercase tracking-[0.18em] text-twilight-blue">
-          Our products
+          In production
         </p>
       </Container>
 

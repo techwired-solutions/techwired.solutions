@@ -9,27 +9,27 @@ export function Products() {
   return (
     <section
       id="products"
-      className="relative overflow-hidden bg-night py-24 text-whiteout sm:py-32"
+      className="relative z-10 overflow-hidden bg-night py-24 text-whiteout sm:py-32"
     >
       {/* faint sky so the glass reads as glass */}
       <Image
-        src="/images/sky/day.jpg"
+        src="/images/sky/sky.jpg"
         alt=""
         fill
         sizes="100vw"
-        className="pointer-events-none object-cover opacity-20"
+        className="pointer-events-none object-cover opacity-25"
         aria-hidden
       />
-      <div className="pointer-events-none absolute inset-0 bg-night/70" />
+      <div className="pointer-events-none absolute inset-0 bg-night/75" />
 
-      <Container className="relative flex flex-col gap-14">
+      <Container className="relative flex flex-col gap-16">
         <Reveal className="flex flex-col items-center gap-4 text-center">
-          <span className="text-[13px] font-medium uppercase tracking-[0.18em] text-white/55">
-            What we build
+          <span className="text-[20px] font-medium text-white/60">
+            Our products
           </span>
-          <h2 className="tnt max-w-[22ch] text-[clamp(28px,5vw,52px)] text-whiteout">
-            Three products we design, build, and{" "}
-            <span className="cursive text-[1.15em]">keep</span> running
+          <h2 className="tnt max-w-[20ch] text-[clamp(32px,5vw,56px)] text-whiteout">
+            Designed, built, and{" "}
+            <span className="cursive text-[1.15em]">kept</span> running by us
           </h2>
         </Reveal>
 
@@ -42,7 +42,7 @@ export function Products() {
                 delay={i * 0.08}
                 className={cn(
                   "flex flex-col gap-5 rounded-xl p-5",
-                  featured ? "glass-strong lg:-mt-6 lg:mb-6" : "glass",
+                  featured ? "glass-strong lg:-mt-8 lg:mb-8" : "glass",
                 )}
               >
                 <div className="overflow-hidden rounded-image border border-white/15">
@@ -60,7 +60,7 @@ export function Products() {
                 <span className="text-[12px] font-medium uppercase tracking-[0.16em] text-white/55">
                   {p.tag}
                 </span>
-                <h3 className="tnt text-[26px] text-whiteout">{p.name}</h3>
+                <h3 className="tnt text-[28px] text-whiteout">{p.name}</h3>
                 <p className="text-[14px] leading-[1.6] text-white/70">
                   {p.blurb}
                 </p>

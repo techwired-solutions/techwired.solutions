@@ -4,7 +4,7 @@ import { LogoMark } from "@/components/ui/Logo";
 
 export function Footer() {
   return (
-    <footer className="bg-night-deep py-16 text-whiteout">
+    <footer className="relative z-10 bg-night-deep py-16 text-whiteout">
       <Container className="flex flex-col gap-14">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
           <div className="flex flex-col gap-4">

@@ -4,7 +4,7 @@ import { Reveal } from "@/components/ui/Reveal";
 
 export function Approach() {
   return (
-    <section id="approach" className="bg-page py-24 sm:py-32">
+    <section id="approach" className="relative z-10 bg-page py-24 sm:py-32">
       <Container className="flex flex-col gap-16">
         <Reveal className="flex flex-col items-center gap-4 text-center">
           <span className="text-[13px] font-medium uppercase tracking-[0.18em] text-twilight-blue">

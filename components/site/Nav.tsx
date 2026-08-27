@@ -10,11 +10,11 @@ import { Wordmark } from "@/components/ui/Logo";
 import { Button } from "@/components/ui/Button";
 
 export function Nav() {
-  const [past, setPast] = useState(false); // scrolled past the hero
+  const [docked, setDocked] = useState(false);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setPast(window.scrollY > window.innerHeight - 90);
+    const onScroll = () => setDocked(window.scrollY > window.innerHeight * 1.02);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
@@ -31,54 +31,65 @@ export function Nav() {
     };
   }, [open]);
 
-  const dark = !past && !open; // white-on-photo mode
+  const onSky = !docked && !open;
 
   return (
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
-        past || open
+        docked || open
           ? "border-b border-ink/10 bg-page/85 backdrop-blur-md"
           : "border-b border-transparent",
       )}
     >
-      <Container className="flex h-[72px] items-center justify-between">
-        <a href="#top" aria-label="Techwired Solutions — home">
-          <Wordmark className={dark ? "text-whiteout" : "text-ink"} />
+      <Container className="relative flex h-[72px] items-center justify-between">
+        {/* left — nav links (desktop) / menu button (mobile) */}
+        <div className="flex items-center">
+          <nav className="hidden items-center gap-1 md:flex">
+            {nav.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "rounded-button px-3 py-2 text-[14px] font-medium transition-colors",
+                  onSky
+                    ? "text-white/75 hover:text-white"
+                    : "text-ink/60 hover:text-ink",
+                )}
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+          <button
+            type="button"
+            className={cn("-ml-2 p-2 md:hidden", onSky ? "text-whiteout" : "text-ink")}
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+          >
+            {open ? <X strokeWidth={2} /> : <Menu strokeWidth={2} />}
+          </button>
+        </div>
+
+        {/* centre — wordmark (crossfades in as the sculpture docks) */}
+        <a
+          href="#top"
+          aria-label="Techwired Solutions — home"
+          className={cn(
+            "absolute left-1/2 -translate-x-1/2 transition-opacity duration-500",
+            docked ? "opacity-100" : "pointer-events-none opacity-0",
+          )}
+        >
+          <Wordmark className="text-ink" />
         </a>
 
-        <nav className="hidden items-center gap-1 md:flex">
-          {nav.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "rounded-button px-3 py-2 text-[14px] font-medium transition-colors",
-                dark
-                  ? "text-white/75 hover:text-white"
-                  : "text-ink/60 hover:text-ink",
-              )}
-            >
-              {item.label}
-            </a>
-          ))}
-        </nav>
-
+        {/* right — CTA */}
         <div className="hidden md:block">
-          <Button as="a" href="#contact" variant={dark ? "glass" : "ghost"}>
+          <Button as="a" href="#contact" variant={onSky ? "glass" : "ghost"}>
             Start a project
           </Button>
         </div>
-
-        <button
-          type="button"
-          className={cn("-mr-2 p-2 md:hidden", dark ? "text-whiteout" : "text-ink")}
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-        >
-          {open ? <X strokeWidth={2} /> : <Menu strokeWidth={2} />}
-        </button>
       </Container>
 
       <AnimatePresence>

@@ -5,7 +5,7 @@ import { Reveal } from "@/components/ui/Reveal";
 
 export function Work() {
   return (
-    <section id="work" className="border-t border-ink/10 bg-page py-20 sm:py-24">
+    <section id="work" className="relative z-10 border-t border-ink/10 bg-page py-20 sm:py-24">
       <Container className="flex flex-col gap-10">
         <Reveal className="flex flex-col gap-3">
           <span className="text-[13px] font-medium uppercase tracking-[0.18em] text-twilight-blue">
