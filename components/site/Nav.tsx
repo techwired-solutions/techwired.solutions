@@ -10,14 +10,18 @@ import { Wordmark } from "@/components/ui/Logo";
 import { Button } from "@/components/ui/Button";
 
 export function Nav() {
-  const [scrolled, setScrolled] = useState(false);
+  const [past, setPast] = useState(false); // scrolled past the hero
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => setPast(window.scrollY > window.innerHeight - 90);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
 
   useEffect(() => {
@@ -27,18 +31,20 @@ export function Nav() {
     };
   }, [open]);
 
+  const dark = !past && !open; // white-on-photo mode
+
   return (
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
-        scrolled || open
-          ? "border-b border-black/10 bg-whiteout/85 backdrop-blur-md"
-          : "border-b border-transparent bg-transparent",
+        past || open
+          ? "border-b border-ink/10 bg-page/85 backdrop-blur-md"
+          : "border-b border-transparent",
       )}
     >
       <Container className="flex h-[72px] items-center justify-between">
         <a href="#top" aria-label="Techwired Solutions — home">
-          <Wordmark />
+          <Wordmark className={dark ? "text-whiteout" : "text-ink"} />
         </a>
 
         <nav className="hidden items-center gap-1 md:flex">
@@ -46,7 +52,12 @@ export function Nav() {
             <a
               key={item.href}
               href={item.href}
-              className="rounded-button px-3 py-2 text-[14px] font-medium text-ink/60 transition-colors hover:text-ink"
+              className={cn(
+                "rounded-button px-3 py-2 text-[14px] font-medium transition-colors",
+                dark
+                  ? "text-white/75 hover:text-white"
+                  : "text-ink/60 hover:text-ink",
+              )}
             >
               {item.label}
             </a>
@@ -54,14 +65,14 @@ export function Nav() {
         </nav>
 
         <div className="hidden md:block">
-          <Button as="a" href="#contact" variant="ghost">
+          <Button as="a" href="#contact" variant={dark ? "glass" : "ghost"}>
             Start a project
           </Button>
         </div>
 
         <button
           type="button"
-          className="-mr-2 p-2 text-ink md:hidden"
+          className={cn("-mr-2 p-2 md:hidden", dark ? "text-whiteout" : "text-ink")}
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
@@ -77,7 +88,7 @@ export function Nav() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
-            className="border-t border-black/10 bg-whiteout md:hidden"
+            className="border-t border-ink/10 bg-page md:hidden"
           >
             <Container className="flex flex-col gap-1 py-4">
               {nav.map((item) => (

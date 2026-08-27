@@ -2,7 +2,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 type Common = {
-  variant?: "ghost" | "solid";
+  variant?: "ghost" | "solid" | "glass";
   className?: string;
   children: React.ReactNode;
 };
@@ -10,15 +10,18 @@ type Common = {
 const base =
   "inline-flex items-center justify-center gap-2 rounded-button px-4 py-2.5 text-[14px] font-medium leading-none transition-colors duration-200 select-none";
 
-/* Air rule: buttons are ghost (transparent + border) or a light/haze fill —
-   never a solid saturated colour. Both variants below live on the light canvas. */
-function classesFor(variant: "ghost" | "solid") {
-  // "Solid Light Button": haze fill, ink text, ink border.
-  if (variant === "solid") {
-    return "bg-haze text-ink border border-ink hover:bg-ink hover:text-whiteout";
+function classesFor(variant: NonNullable<Common["variant"]>) {
+  switch (variant) {
+    case "solid":
+      // "Solid Light Button": haze fill, ink text, ink border
+      return "bg-haze text-ink border border-ink hover:bg-ink hover:text-whiteout";
+    case "glass":
+      // over the photographic hero
+      return "glass text-whiteout hover:bg-white/20";
+    default:
+      // ghost: transparent + border
+      return "border border-ink/30 text-ink hover:border-ink hover:bg-ink/[0.05]";
   }
-  // Ghost: transparent + border.
-  return "border border-ink/30 text-ink hover:border-ink hover:bg-ink/[0.05]";
 }
 
 type ButtonAsButton = Common &

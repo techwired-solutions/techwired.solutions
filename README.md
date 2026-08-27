@@ -4,8 +4,10 @@ Marketing site for [Techwired Solutions](https://techwiredsolutions.com.np) — 
 technology company from Kathmandu that builds and operates its own products
 (Linkypot, Krisearch, Gharbari) and ships digital work for clients.
 
-Single-page site, dark "Air"-style design system: type-driven, flat surfaces,
-ghost buttons, no gradients.
+Single-page site on the "Air" design system: warm cream canvas (#fff8dc), a
+full-bleed photographic hero with a glass wordmark and four time-of-day sky
+modes (Sunrise / Day / Sunset / Night, persisted in localStorage), poster-scale
+compressed headlines, glass product cards, flat surfaces, no shadows.
 
 ## Stack
 
@@ -48,11 +50,13 @@ Set these in Vercel → Project → Settings → Environment Variables:
 app/            routes, layout, /api/contact, robots + sitemap
 components/
   site/         Nav, Footer
-  sections/     Hero, Marquee, Capabilities, Ventures, Work, About, Contact
-  ui/           Button, Container, Logo, Reveal, SectionHeader, UnderlineLink
-lib/site.ts     all site copy + the companies / work lists
-public/images/work/  site screenshots
+  sections/     Hero, Marquee, Products, Statement, Approach, Work, Contact
+  ui/           Button, Container, Logo, Reveal, UnderlineLink
+lib/site.ts     all site copy — products, approach, client work, sky modes
+public/images/sky/   the four hero sky photos
+public/images/work/  product / client screenshots
 ```
 
-Editing content — companies, client work, capabilities, contact details — is
-done in [`lib/site.ts`](lib/site.ts).
+Editing content — products, approach, client work, contact details — is done in
+[`lib/site.ts`](lib/site.ts). Hero sky photos live in `public/images/sky/`
+(`sunrise.jpg`, `day.jpg`, `sunset.jpg`, `night.jpg`).

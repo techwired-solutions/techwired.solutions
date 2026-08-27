@@ -1,20 +1,24 @@
 @import "tailwindcss";
 
 /* ============================================================
-   TECHWIRED SOLUTIONS — "Air" style system, light canvas
-   White / haze surfaces · ink text · type-driven · flat · no gradients
+   TECHWIRED SOLUTIONS — "Air" system
+   Cream canvas (#fff8dc) · atmospheric photographic hero ·
+   poster-scale compressed type · glass cards · ink text
    ============================================================ */
 
 @theme {
-  /* Colours (exact Air tokens) */
+  /* Colours — exact Air tokens + a cream canvas and a night blue */
   --color-whiteout: #ffffff;
   --color-haze: #f5f5f5;
   --color-ink: #1b1b1b;
   --color-black-void: #000000;
   --color-twilight-blue: #426188;
   --color-signal-blue: #2b7fff;
+  --color-page: #fff8dc;
+  --color-night: #12396a;
+  --color-night-deep: #0b2445;
 
-  /* Type families — "Control" is proprietary; these are the documented subs */
+  /* Type — "Control" is proprietary; documented substitutes */
   --font-control: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
     "Segoe UI", Roboto, sans-serif;
   --font-control-compressed: var(--font-anton), "Arial Narrow", system-ui,
@@ -29,7 +33,7 @@
   --text-heading: 32px;
   --text-heading-lg: 56px;
 
-  /* Radii (4 / 8 / 11 / 12 / 14 — no others) */
+  /* Radii — 4 / 8 / 11 / 12 / 14, nothing else */
   --radius-input: 4px;
   --radius-button: 8px;
   --radius-image: 11px;
@@ -47,10 +51,11 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
+    background: var(--color-night-deep);
   }
 
   body {
-    background: var(--color-whiteout);
+    background: var(--color-page);
     color: var(--color-ink);
     font-family: var(--font-control);
     font-weight: 500;
@@ -61,13 +66,12 @@
   }
 
   :where(section[id], span[id]) {
-    scroll-margin-top: 96px;
+    scroll-margin-top: 88px;
   }
 
-  /* Calmer long-form default; any text-* utility overrides both. */
   p {
     font-weight: 400;
-    color: color-mix(in oklab, var(--color-ink) 68%, transparent);
+    color: color-mix(in oklab, var(--color-ink) 66%, transparent);
   }
 
   ::selection {
@@ -82,30 +86,79 @@
 }
 
 @layer components {
+  /* Poster display — Control Compressed */
   .display {
     font-family: var(--font-control-compressed);
-    font-weight: 400; /* Anton ships a single weight */
+    font-weight: 400;
     text-transform: uppercase;
-    line-height: 0.86;
-    letter-spacing: -0.005em;
-    color: var(--color-ink);
+    line-height: 0.85;
+    letter-spacing: -0.01em;
+    color: inherit;
   }
 
-  .cursive {
-    font-family: var(--font-control-cursive);
-    font-weight: 500;
-    text-transform: none;
-    letter-spacing: 0;
-    font-style: normal;
-  }
-
+  /* Upright feature headline — Control TNT */
   .tnt {
     font-family: var(--font-control-tnt);
     font-weight: 500;
     letter-spacing: -0.02em;
     line-height: 1.05;
-    color: var(--color-ink);
+    color: inherit;
   }
+
+  /* Cursive accent — Control Cursive */
+  .cursive {
+    font-family: var(--font-control-cursive);
+    font-weight: 500;
+    letter-spacing: 0;
+    font-style: normal;
+    text-transform: none;
+    color: inherit;
+  }
+
+  /* Glass surface — near-transparent, thin bright border, no shadow */
+  .glass {
+    background: rgba(255, 255, 255, 0.06);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+  }
+  .glass-strong {
+    background: rgba(255, 255, 255, 0.12);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+  }
+}
+
+/* Glass wordmark — layered frosted-glass text */
+.glasstext {
+  position: relative;
+  font-family: var(--font-control-compressed);
+  text-transform: uppercase;
+  line-height: 0.82;
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, 0.22);
+  -webkit-text-stroke: 2px rgba(255, 255, 255, 0.9);
+  text-stroke: 2px rgba(255, 255, 255, 0.9);
+  filter: drop-shadow(0 6px 28px rgba(0, 0, 0, 0.35));
+}
+.glasstext::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  color: transparent;
+  -webkit-text-stroke: 0;
+  background: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 0.1) 40%,
+    rgba(255, 255, 255, 0) 60%,
+    rgba(255, 255, 255, 0.7) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  opacity: 0.85;
+  pointer-events: none;
 }
 
 /* Marquee */
@@ -117,9 +170,8 @@
     transform: translateX(-50%);
   }
 }
-
 .marquee-track {
-  animation: tw-marquee 40s linear infinite;
+  animation: tw-marquee 42s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -137,13 +189,10 @@
   height: 12px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--color-whiteout);
+  background: var(--color-page);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.16);
-  border: 3px solid var(--color-whiteout);
+  background: rgba(27, 27, 27, 0.22);
+  border: 3px solid var(--color-page);
   border-radius: 9999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.28);
 }

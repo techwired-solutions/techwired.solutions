@@ -1,63 +1,73 @@
 import type { LucideIcon } from "lucide-react";
-import { Boxes, Globe, Shapes, LineChart } from "lucide-react";
+import { Sunrise, Sun, Sunset, Moon } from "lucide-react";
 
 export const site = {
   name: "Techwired Solutions",
   domain: "techwiredsolutions.com.np",
   email: "hello@techwiredsolutions.com.np",
-  location: "Kathmandu, Nepal",
   github: "https://github.com/techwired-solutions",
   founder: "Sudip Parajuli",
+  tagline: "A technology company that builds and runs its own products.",
 };
 
 export const nav = [
-  { label: "Companies", href: "#companies" },
+  { label: "Products", href: "#products" },
+  { label: "Approach", href: "#approach" },
   { label: "Work", href: "#work" },
-  { label: "About", href: "#about" },
   { label: "Contact", href: "#contact" },
 ];
 
-/* Wordmarks for the quiet marquee under the hero */
-export const roster = [
-  "Linkypot",
-  "Krisearch",
-  "Gharbari",
-  "EasyMoto",
-  "ChillPill",
-  "Amicus",
-  "Aryal Farm",
-];
+/* ---- Hero sky modes (time of day) ---------------------------------- */
 
-export type Capability = {
-  title: string;
-  body: string;
+export type ModeId = "sunrise" | "day" | "sunset" | "night";
+
+export const modes: {
+  id: ModeId;
+  label: string;
   icon: LucideIcon;
-};
-
-export const capabilities: Capability[] = [
+  image: string;
+  /* nav / hero foreground tint while this sky is active */
+  fg: string;
+  /* eyebrow + accents over the sky */
+  accent: string;
+}[] = [
   {
-    title: "Product studio",
-    body: "We build and run our own products end to end — research, design, engineering, infrastructure, and the growth work that keeps them alive.",
-    icon: Boxes,
+    id: "sunrise",
+    label: "Sunrise",
+    icon: Sunrise,
+    image: "/images/sky/sunrise.jpg",
+    fg: "#1b1b1b",
+    accent: "#7c5f8f",
   },
   {
-    title: "Client websites & apps",
-    body: "Marketing sites, web apps, and booking platforms for businesses that need something considered, fast, and easy to maintain.",
-    icon: Globe,
+    id: "day",
+    label: "Day",
+    icon: Sun,
+    image: "/images/sky/day.jpg",
+    fg: "#1b1b1b",
+    accent: "#2b6cb0",
   },
   {
-    title: "Brand & interface",
-    body: "Identity, design systems, and interfaces — the difference between software that works and software that feels finished.",
-    icon: Shapes,
+    id: "sunset",
+    label: "Sunset",
+    icon: Sunset,
+    image: "/images/sky/sunset.jpg",
+    fg: "#ffffff",
+    accent: "#ffd9b0",
   },
   {
-    title: "Growth & SEO",
-    body: "Technical SEO, analytics, performance budgets, and the unglamorous work that compounds long after launch.",
-    icon: LineChart,
+    id: "night",
+    label: "Night",
+    icon: Moon,
+    image: "/images/sky/night.jpg",
+    fg: "#ffffff",
+    accent: "#9db8e8",
   },
 ];
 
-export type Venture = {
+/* ---- Products (the focus) ---------------------------------------- */
+
+export type Product = {
   name: string;
   tag: string;
   blurb: string;
@@ -66,7 +76,7 @@ export type Venture = {
   image: string;
 };
 
-export const ventures: Venture[] = [
+export const products: Product[] = [
   {
     name: "Linkypot",
     tag: "Digital business cards",
@@ -89,19 +99,43 @@ export const ventures: Venture[] = [
     name: "Gharbari",
     tag: "Real estate",
     blurb:
-      "A neighborly way to connect buyers, renters, and owners — post what you are looking for, or the place you have, without the noise of listing portals.",
+      "A neighborly way to connect buyers, renters, and owners — post what you're looking for, or the place you have, without the noise of listing portals.",
     href: "https://gharbari-coral.vercel.app",
     hrefLabel: "gharbari-coral.vercel.app",
     image: "/images/work/gharbari.jpg",
   },
 ];
 
+/* Product names loop under the hero */
+export const roster = products.map((p) => p.name);
+
+/* ---- Approach (glass steps) ------------------------------------- */
+
+export const approach: { k: string; title: string; body: string }[] = [
+  {
+    k: "01",
+    title: "Build",
+    body: "We start our own products from a real problem and ship the first version fast — design, engineering, and infrastructure in one team.",
+  },
+  {
+    k: "02",
+    title: "Run",
+    body: "Launch is the start. We operate what we build — support, uptime, iteration — so the product keeps earning its place.",
+  },
+  {
+    k: "03",
+    title: "Grow",
+    body: "Analytics, technical SEO, and performance work that compounds. The unglamorous part that decides whether a product lasts.",
+  },
+];
+
+/* ---- Client work (low emphasis strip) -------------------------- */
+
 export type WorkItem = {
   name: string;
   tag: string;
-  href: string | null;
+  href: string;
   hrefLabel: string;
-  image: string;
 };
 
 export const work: WorkItem[] = [
@@ -110,27 +144,23 @@ export const work: WorkItem[] = [
     tag: "Motorbike rental platform",
     href: "https://easymoto.com.np",
     hrefLabel: "easymoto.com.np",
-    image: "/images/work/easymoto.jpg",
   },
   {
     name: "ChillPill Gaming Cafe",
     tag: "PlayStation cafe site & owner console",
-    href: "https://chillpillgamingcafe.vercel.app",
-    hrefLabel: "chillpillgamingcafe.vercel.app",
-    image: "/images/work/chillpill.jpg",
+    href: "https://chillpill-gaming-cafe.vercel.app",
+    hrefLabel: "chillpill-gaming-cafe.vercel.app",
   },
   {
     name: "Amicus Institute of Law",
     tag: "Law school website",
     href: "https://amicus.com.np",
     hrefLabel: "amicus.com.np",
-    image: "/images/work/amicus.jpg",
   },
   {
     name: "Aryal Farm",
     tag: "Farm-to-business dairy supply",
     href: "https://aryalfarm.com.np",
     hrefLabel: "aryalfarm.com.np",
-    image: "/images/work/aryalfarm.jpg",
   },
 ];

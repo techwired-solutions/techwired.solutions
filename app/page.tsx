@@ -2,24 +2,24 @@ import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { Hero } from "@/components/sections/Hero";
 import { Marquee } from "@/components/sections/Marquee";
-import { Capabilities } from "@/components/sections/Capabilities";
-import { Ventures } from "@/components/sections/Ventures";
+import { Statement } from "@/components/sections/Statement";
+import { Products } from "@/components/sections/Products";
+import { Approach } from "@/components/sections/Approach";
 import { Work } from "@/components/sections/Work";
-import { About } from "@/components/sections/About";
 import { Contact } from "@/components/sections/Contact";
 
 export default function Home() {
   return (
     <>
-      <span id="top" className="absolute top-0" aria-hidden="true" />
+      <span id="top" aria-hidden="true" />
       <Nav />
       <main>
         <Hero />
         <Marquee />
-        <Capabilities />
-        <Ventures />
+        <Products />
+        <Statement>We build the products we wish already existed.</Statement>
+        <Approach />
         <Work />
-        <About />
         <Contact />
       </main>
       <Footer />
