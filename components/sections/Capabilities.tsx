@@ -5,7 +5,7 @@ import { Reveal } from "@/components/ui/Reveal";
 
 export function Capabilities() {
   return (
-    <section id="capabilities" className="py-24 sm:py-32">
+    <section id="capabilities" className="py-14 sm:py-20">
       <Container className="flex flex-col gap-14">
         <SectionHeader label="What we do">
           We take an idea from <span className="cursive text-[1.15em]">sketch</span>{" "}

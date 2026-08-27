@@ -8,14 +8,14 @@ import { Reveal } from "@/components/ui/Reveal";
 
 export function Ventures() {
   return (
-    <section id="companies" className="py-24 sm:py-32">
-      <Container className="flex flex-col gap-16 sm:gap-24">
+    <section id="companies" className="py-14 sm:py-20">
+      <Container className="flex flex-col gap-12 sm:gap-16">
         <SectionHeader label="Our companies">
           Products we design, build, and{" "}
           <span className="cursive text-[1.15em]">keep</span> running
         </SectionHeader>
 
-        <div className="flex flex-col gap-16 sm:gap-24">
+        <div className="flex flex-col gap-12 sm:gap-16">
           {ventures.map((v, i) => (
             <Reveal
               key={v.name}
@@ -29,7 +29,7 @@ export function Ventures() {
                   i % 2 === 1 && "lg:order-2",
                 )}
               >
-                <div className="relative aspect-[16/11]">
+                <div className="relative aspect-[16/10]">
                   <Image
                     src={v.image}
                     alt={`${v.name} — screenshot`}

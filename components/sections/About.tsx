@@ -10,7 +10,7 @@ const facts = [
 
 export function About() {
   return (
-    <section id="about" className="py-24 sm:py-32">
+    <section id="about" className="py-14 sm:py-20">
       <Container className="flex flex-col gap-14">
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
           <Reveal className="flex flex-col gap-4">

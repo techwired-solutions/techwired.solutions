@@ -23,8 +23,8 @@ export const roster = [
   "Krisearch",
   "Gharbari",
   "EasyMoto",
-  "ChillPill Gaming Cafe",
-  "Amicus Institute of Law",
+  "ChillPill",
+  "Amicus",
   "Aryal Farm",
 ];
 

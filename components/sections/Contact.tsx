@@ -6,7 +6,7 @@ import { ContactForm } from "./ContactForm";
 
 export function Contact() {
   return (
-    <section id="contact" className="py-24 sm:py-32">
+    <section id="contact" className="py-14 sm:py-20">
       <Container>
         <Reveal className="grid gap-8 rounded-card bg-haze p-6 text-ink sm:p-10 lg:grid-cols-2 lg:gap-16 lg:p-14">
           <div className="flex flex-col gap-5">

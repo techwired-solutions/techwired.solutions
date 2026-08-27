@@ -7,7 +7,7 @@ import { Reveal } from "@/components/ui/Reveal";
 
 export function Work() {
   return (
-    <section id="work" className="py-24 sm:py-32">
+    <section id="work" className="py-14 sm:py-20">
       <Container className="flex flex-col gap-14">
         <SectionHeader label="Selected work">
           Sites we&apos;ve built{" "}
@@ -18,7 +18,7 @@ export function Work() {
           {work.map((item, i) => (
             <Reveal key={item.name} delay={(i % 2) * 0.06} className="flex flex-col gap-4">
               <div className="overflow-hidden rounded-image border border-white/10">
-                <div className="relative aspect-[16/11]">
+                <div className="relative aspect-[16/10]">
                   <Image
                     src={item.image}
                     alt={`${item.name} — screenshot`}

@@ -26,19 +26,17 @@ export function UnderlineLink({
   return (
     <a
       className={cn(
-        "group inline-flex items-center gap-1 border-b-2 border-current px-2 pb-0.5 text-[14px] font-medium transition-opacity hover:opacity-70",
+        "group inline-flex items-center gap-1 px-2 text-[14px] font-medium transition-opacity hover:opacity-70",
         color,
         className,
       )}
-      {...(external
-        ? { target: "_blank", rel: "noopener noreferrer" }
-        : {})}
+      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       {...rest}
     >
-      {children}
+      <span className="border-b-2 border-current pb-0.5">{children}</span>
       {arrow && (
         <ArrowUpRight
-          className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+          className="h-3.5 w-3.5 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
           strokeWidth={2}
         />
       )}
