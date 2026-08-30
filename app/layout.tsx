@@ -1,26 +1,26 @@
 import type { Metadata } from "next";
-import { Inter, Anton, Caveat } from "next/font/google";
+import { Bricolage_Grotesque, Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
   display: "swap",
-  weight: ["400", "500"],
+  weight: ["500", "600", "700", "800"],
 });
 
-const anton = Anton({
-  variable: "--font-anton",
+const hanken = Hanken_Grotesk({
+  variable: "--font-hanken",
   subsets: ["latin"],
   display: "swap",
-  weight: "400",
+  weight: ["400", "500", "600"],
 });
 
-const caveat = Caveat({
-  variable: "--font-caveat",
+const jb = JetBrains_Mono({
+  variable: "--font-mono-jb",
   subsets: ["latin"],
   display: "swap",
-  weight: ["400", "500"],
+  weight: ["400", "500", "700"],
 });
 
 const SITE_URL = "https://techwiredsolutions.com.np";
@@ -28,16 +28,15 @@ const SITE_URL = "https://techwiredsolutions.com.np";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Techwired Solutions — a technology company from Kathmandu",
+    default: "Techwired Solutions — a journey through what we build",
     template: "%s · Techwired Solutions",
   },
   description:
-    "Techwired Solutions is a Nepal-based technology company. We design, build, and operate our own products — Linkypot, Krisearch, Gharbari — and ship digital products for a handful of clients.",
+    "Techwired Solutions is a technology company that builds and runs its own products — Linkypot, Krisearch, Gharbari — and ships for a few clients each year. Scroll from the void to a landing.",
   keywords: [
     "Techwired Solutions",
-    "technology company Nepal",
-    "venture studio Kathmandu",
-    "web development Nepal",
+    "technology company",
+    "product studio",
     "Linkypot",
     "Krisearch",
     "Gharbari",
@@ -48,19 +47,15 @@ export const metadata: Metadata = {
     type: "website",
     url: SITE_URL,
     siteName: "Techwired Solutions",
-    title: "Techwired Solutions — a technology company from Kathmandu",
-    description:
-      "We design, build, and operate our own products — and ship digital products for a handful of clients.",
+    title: "Techwired Solutions",
+    description: "A technology company that builds and runs its own products.",
   },
   twitter: {
     card: "summary_large_image",
     title: "Techwired Solutions",
-    description:
-      "A Nepal-based technology company building its own products and shipping for clients.",
+    description: "A technology company that builds and runs its own products.",
   },
-  icons: {
-    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
-  },
+  icons: { icon: [{ url: "/favicon.svg", type: "image/svg+xml" }] },
 };
 
 export default function RootLayout({
@@ -69,7 +64,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} ${anton.variable} ${caveat.variable}`}
+        className={`grain ${bricolage.variable} ${hanken.variable} ${jb.variable}`}
       >
         {children}
       </body>

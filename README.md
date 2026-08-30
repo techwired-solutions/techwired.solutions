@@ -1,20 +1,37 @@
-# Techwired Solutions
+# Techwired Solutions — "The Signal"
 
-Marketing site for [Techwired Solutions](https://techwiredsolutions.com.np) — a
-technology company from Kathmandu that builds and operates its own products
-(Linkypot, Krisearch, Gharbari) and ships digital work for clients.
+The [techwiredsolutions.com.np](https://techwiredsolutions.com.np) site as a
+single scroll-driven journey: a pulse of light ignites in the void, races down a
+wire, breaks into open sky, passes through the products we build (Linkypot,
+Krisearch, Gharbari), and comes to rest at a contact form.
 
-Single-page site on the "Air" design system: warm cream canvas (#fff8dc), a
-full-bleed photographic hero with a glass wordmark and four time-of-day sky
-modes (Sunrise / Day / Sunset / Night, persisted in localStorage), poster-scale
-compressed headlines, glass product cards, flat surfaces, no shadows.
+Nine full-bleed scenes, each an AI-generated video clip **scrubbed to scroll
+position**. Concept + prompt sheet: [`docs/the-signal-journey`](https://claude.ai/code/artifact/55ecb77b-cb2c-4906-be0b-96be6621719d).
 
 ## Stack
 
-- [Next.js 16](https://nextjs.org) (App Router, Turbopack) · React 19
-- Tailwind CSS v4
-- `lucide-react` for icons · `framer-motion` for scroll reveals
-- Deployed on Vercel
+- [Next.js 16](https://nextjs.org) · React 19 · Tailwind CSS v4
+- [`lenis`](https://github.com/darkroomengineering/lenis) — smooth scroll
+- Manual rAF loop maps scroll → `video.currentTime` and drives overlay reveals
+  via a `--p` CSS var (no per-frame React renders)
+- Fonts: Bricolage Grotesque / Hanken Grotesk / JetBrains Mono (Google Fonts)
+
+## Assets
+
+```
+public/journey/
+  clips/       01.mp4 … 09.mp4  (720p, seekable, no audio) + NN-sm.mp4 (480p mobile)
+  keyframes/   00.jpg … 09.jpg  (scene boundary stills — posters + reduced-motion fallback)
+  auras/       linkypot.jpg  krisearch.jpg  gharbari.jpg
+```
+
+Clips are re-encoded from the Flow/Veo exports with a dense keyframe interval
+(`ffmpeg … -x264-params keyint=3`) so `currentTime` scrubbing stays smooth. Scene
+copy, order, and hold lengths live in
+[`components/journey/scenes.ts`](components/journey/scenes.ts).
+
+If the repo gets heavy, the `clips/` folder can move to Vercel Blob or R2 and the
+paths in `scenes.ts` updated.
 
 ## Develop
 
@@ -23,40 +40,12 @@ npm install
 npm run dev
 ```
 
-Open <http://localhost:3000>.
+`npm run build` · `npm run lint`.
 
-```bash
-npm run build   # production build
-npm run lint    # eslint
-```
+## Behaviour
 
-## Contact form
-
-`POST /api/contact` sends enquiries via [Resend](https://resend.com) when
-`RESEND_API_KEY` is set. Without it the endpoint returns `503 not_configured`
-and the form falls back to a `mailto:` link. See [`.env.example`](.env.example).
-
-Set these in Vercel → Project → Settings → Environment Variables:
-
-| Variable         | Notes                                             |
-| ---------------- | ------------------------------------------------- |
-| `RESEND_API_KEY` | optional; enables real email delivery             |
-| `CONTACT_TO`     | recipient address (default `hello@…com.np`)       |
-| `CONTACT_FROM`   | verified Resend sender                            |
-
-## Structure
-
-```
-app/            routes, layout, /api/contact, robots + sitemap
-components/
-  site/         Nav, Footer
-  sections/     Hero, Marquee, Products, Statement, Approach, Work, Contact
-  ui/           Button, Container, Logo, Reveal, UnderlineLink
-lib/site.ts     all site copy — products, approach, client work, sky modes
-public/images/sky/   the four hero sky photos
-public/images/work/  product / client screenshots
-```
-
-Editing content — products, approach, client work, contact details — is done in
-[`lib/site.ts`](lib/site.ts). Hero sky photos live in `public/images/sky/`
-(`sunrise.jpg`, `day.jpg`, `sunset.jpg`, `night.jpg`).
+- **Reduced-motion / save-data:** every scene falls back to its end keyframe as a
+  static full-screen still; normal scroll, overlays still fade in.
+- **Mobile:** 480p clips, shorter preload window.
+- **Contact form:** `POST /api/contact` → Resend when `RESEND_API_KEY` is set,
+  otherwise a `mailto:` fallback. See `.env.example`.
