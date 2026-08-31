@@ -8,7 +8,7 @@ import { Rail } from "./Rail";
 import { Chapters } from "./Chapters";
 import { Contact } from "./Contact";
 
-const SCROLL_VH = 1150; // scroll distance the film is scrubbed across
+const SCROLL_VH = 1350; // scroll distance the film is scrubbed across
 
 export function Journey() {
   const [still, setStill] = useState(false);

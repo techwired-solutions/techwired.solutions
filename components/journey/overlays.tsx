@@ -5,15 +5,25 @@ import { beats, steps, stats, products, work, type Beat } from "./beats";
 import { site } from "@/lib/site";
 
 /* --- CSS math driven by the global `--s` (0..1) --------------------- */
+const clampN = (a: string, mid: string, b: string) => `clamp(${a}, ${mid}, ${b})`;
 const inRange = (a: number, b: number) =>
-  `clamp(0, calc((var(--s,0) - ${a}) / ${(b - a).toFixed(4)}), 1)`;
+  clampN("0", `calc((var(--s,0) - ${a}) / ${(b - a).toFixed(4)})`, "1");
 const outRange = (c: number, d: number) => `calc(1 - ${inRange(c, d)})`;
-const win = ([a, , c, d]: number[], b: number) =>
+const win = (a: number, b: number, c: number, d: number) =>
   `min(${inRange(a, b)}, ${outRange(c, d)})`;
+const winR = ([a, b, c, d]: number[]) => win(a, b, c, d);
 const rise = ([a, b, c, d]: number[], px = 42) =>
   `translateY(calc((1 - ${inRange(a, b)}) * ${px}px - ${inRange(c, d)} * ${px}px))`;
 const soften = ([a, b]: number[]) =>
-  `blur(calc((1 - ${inRange(a, b)}) * 7px))`;
+  `blur(calc((1 - ${inRange(a, b)}) * 6px))`;
+
+/* per-line "wipe up from below" — line i of n, staggered inside the fade-in */
+const lineRise = ([a, b]: number[], i: number, n: number) => {
+  const span = b - a;
+  const lo = a + span * (i / (n + 1));
+  const hi = a + span * ((i + 2) / (n + 1));
+  return `translateY(calc((1 - ${inRange(lo, hi)}) * 120%))`;
+};
 
 export function BeatLayer() {
   return (
@@ -25,9 +35,23 @@ export function BeatLayer() {
   );
 }
 
+function Emph({ line, word }: { line: string; word?: string }) {
+  if (!word || !line.toLowerCase().includes(word.toLowerCase())) return <>{line}</>;
+  return (
+    <>
+      {line.split(new RegExp(`(${word})`, "i")).map((chunk, ci) =>
+        chunk.toLowerCase() === word.toLowerCase() ? (
+          <em key={ci}>{chunk}</em>
+        ) : (
+          <span key={ci}>{chunk}</span>
+        ),
+      )}
+    </>
+  );
+}
+
 function BeatView({ beat }: { beat: Beat }) {
   const r = beat.range;
-  const b = r[1];
 
   if (beat.kind === "tagline") {
     return (
@@ -36,16 +60,13 @@ function BeatView({ beat }: { beat: Beat }) {
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(40% 26% at 50% 50%, rgba(6,9,20,0.72), rgba(6,9,20,0) 100%)",
-            opacity: win(r, b),
+              "radial-gradient(42% 28% at 50% 50%, rgba(6,9,20,0.74), rgba(6,9,20,0) 100%)",
+            opacity: winR(r),
           }}
         />
         <p
-          className="relative max-w-[24ch] text-center text-[clamp(1.15rem,2.6vw,1.7rem)] leading-snug text-ink [text-shadow:0_2px_30px_rgba(0,0,0,0.7)]"
-          style={{
-            opacity: win(r, b),
-            transform: rise(r, 30),
-          }}
+          className="relative max-w-[22ch] text-center text-[clamp(1.2rem,2.8vw,1.9rem)] font-medium leading-snug text-ink [text-shadow:0_2px_30px_rgba(0,0,0,0.7)]"
+          style={{ opacity: winR(r), transform: rise(r, 26) }}
         >
           {beat.text}
         </p>
@@ -54,43 +75,40 @@ function BeatView({ beat }: { beat: Beat }) {
   }
 
   if (beat.kind === "statement") {
-    const align = beat.align ?? "center";
+    const left = beat.align === "left";
+    const n = beat.lines.length;
     return (
       <div
         className={
           "absolute inset-0 flex flex-col justify-center px-6 sm:px-14 " +
-          (align === "left" ? "items-start" : "items-center text-center")
+          (left ? "items-start" : "items-center text-center")
         }
       >
         <div
           className="absolute inset-0"
           style={{
-            background:
-              align === "left"
-                ? "linear-gradient(90deg, rgba(6,9,20,0.86), rgba(6,9,20,0.3) 52%, rgba(6,9,20,0) 82%)"
-                : "radial-gradient(62% 50% at 50% 50%, rgba(6,9,20,0.82), rgba(6,9,20,0.1) 78%, rgba(6,9,20,0) 100%)",
-            opacity: win(r, b),
+            background: left
+              ? "linear-gradient(90deg, rgba(6,9,20,0.88), rgba(6,9,20,0.3) 52%, rgba(6,9,20,0) 82%)"
+              : "radial-gradient(64% 52% at 50% 50%, rgba(6,9,20,0.84), rgba(6,9,20,0.12) 78%, rgba(6,9,20,0) 100%)",
+            opacity: winR(r),
           }}
         />
         <h2
-          className="relative u-poster text-[clamp(3rem,12.5vw,10rem)] text-ink [text-shadow:0_4px_40px_rgba(0,0,0,0.55)]"
-          style={{ opacity: win(r, b), transform: rise(r, 50), filter: soften(r) }}
+          className="relative u-poster text-[clamp(2.8rem,11.5vw,9rem)] text-ink [text-shadow:0_4px_44px_rgba(0,0,0,0.55)]"
+          style={{
+            opacity: outRange(r[2], r[3]),
+            transform: `translateY(calc(-${inRange(r[2], r[3])} * 44px))`,
+            filter: soften(r),
+          }}
         >
           {beat.lines.map((line, li) => (
-            <span key={li} className="block">
-              {beat.emphasis && line.toLowerCase().includes(beat.emphasis) ? (
-                <>
-                  {line.split(new RegExp(`(${beat.emphasis})`, "i")).map((chunk, ci) =>
-                    chunk.toLowerCase() === beat.emphasis!.toLowerCase() ? (
-                      <em key={ci}>{chunk}</em>
-                    ) : (
-                      <span key={ci}>{chunk}</span>
-                    ),
-                  )}
-                </>
-              ) : (
-                line
-              )}
+            <span key={li} className="block overflow-hidden pb-[0.06em] leading-[0.98]">
+              <span
+                className="block will-change-transform"
+                style={{ transform: lineRise(r, li, n) }}
+              >
+                <Emph line={line} word={beat.emphasis} />
+              </span>
             </span>
           ))}
         </h2>
@@ -100,59 +118,95 @@ function BeatView({ beat }: { beat: Beat }) {
 
   if (beat.kind === "product") {
     const p = products[beat.index];
-    const onLeft = beat.side === "left";
+    const left = beat.side === "left";
     return (
-      <div
-        className={
-          "absolute inset-0 flex flex-col justify-center gap-6 px-6 sm:px-14 " +
-          (onLeft ? "items-start" : "items-end")
-        }
-      >
+      <div className="absolute inset-0 flex items-center px-6 sm:px-12">
         <div
           className="absolute inset-0"
           style={{
-            background: onLeft
-              ? "linear-gradient(90deg, rgba(6,9,20,0.8), rgba(6,9,20,0.2) 46%, rgba(6,9,20,0) 70%)"
-              : "linear-gradient(270deg, rgba(6,9,20,0.8), rgba(6,9,20,0.2) 46%, rgba(6,9,20,0) 70%)",
-            opacity: win(r, b),
+            background:
+              "linear-gradient(180deg, rgba(6,9,20,0.55), rgba(6,9,20,0.78))",
+            opacity: winR(r),
           }}
         />
-        <span
-          className="relative u-poster text-[clamp(2.6rem,9vw,7rem)] leading-[0.82] text-ink [text-shadow:0_4px_36px_rgba(0,0,0,0.7)]"
-          style={{ opacity: win(r, b), transform: rise(r, 44), filter: soften(r) }}
-        >
-          {p.name}
-        </span>
-
         <div
-          className="glass-strong pointer-events-auto relative w-full max-w-[420px] overflow-hidden rounded-lg shadow-[0_40px_100px_-20px_rgba(0,0,0,0.75)]"
-          style={{
-            opacity: win([r[0] + 0.02, r[1] + 0.02, r[2], r[3]], b + 0.02),
-            transform: rise([r[0] + 0.02, r[1] + 0.03, r[2], r[3]], 34),
-          }}
+          className={
+            "relative mx-auto grid w-full max-w-[1180px] items-center gap-8 lg:gap-16 " +
+            (left
+              ? "lg:grid-cols-[minmax(0,420px)_1fr]"
+              : "lg:grid-cols-[1fr_minmax(0,420px)]")
+          }
         >
-          <div className="relative aspect-[16/10] border-b border-white/10">
-            <Image
-              src={p.shot}
-              alt={`${p.name} — screenshot`}
-              fill
-              sizes="420px"
-              className="object-cover object-top"
-            />
-          </div>
-          <div className="flex flex-col gap-3 p-5">
-            <span className="u-mono text-[10px] tracking-[0.18em] text-teal">
+          {/* text column */}
+          <div
+            className={
+              "flex flex-col gap-5 " + (left ? "lg:order-2" : "lg:order-1")
+            }
+            style={{
+              opacity: winR(r),
+              transform: rise([r[0], r[1] + 0.01, r[2], r[3]], 30),
+            }}
+          >
+            <span className="u-mono text-[11px] tracking-[0.2em] text-teal">
               {p.tag}
             </span>
-            <p className="text-[14px] leading-[1.55] text-muted">{p.blurb}</p>
+            <h3 className="u-poster text-[clamp(2.4rem,7vw,5.2rem)] leading-[0.9] text-ink [text-shadow:0_4px_30px_rgba(0,0,0,0.6)]">
+              {p.name}
+            </h3>
+            <p className="max-w-[46ch] text-[15px] leading-[1.6] text-ink/85">
+              {p.blurb}
+            </p>
+            <div className="mt-1 grid gap-4 sm:grid-cols-2">
+              <div className="flex flex-col gap-1.5">
+                <span className="u-mono text-[10px] tracking-[0.16em] text-faint">
+                  Who it&apos;s for
+                </span>
+                <p className="text-[13px] leading-[1.55] text-muted">
+                  {p.forWhom}
+                </p>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <span className="u-mono text-[10px] tracking-[0.16em] text-faint">
+                  Why we built it
+                </span>
+                <p className="text-[13px] leading-[1.55] text-muted">{p.why}</p>
+              </div>
+            </div>
             <a
               href={p.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="link-sweep mt-1 w-fit u-mono text-[11px] tracking-[0.12em]"
+              className="link-sweep pointer-events-auto mt-1 w-fit u-mono text-[11px] tracking-[0.12em]"
             >
               {p.hrefLabel} ↗
             </a>
+          </div>
+
+          {/* card */}
+          <div
+            className={
+              "glass-strong pointer-events-auto relative overflow-hidden rounded-lg shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8)] " +
+              (left ? "lg:order-1" : "lg:order-2")
+            }
+            style={{
+              opacity: winR([r[0] + 0.015, r[1] + 0.02, r[2], r[3]]),
+              transform: rise([r[0] + 0.015, r[1] + 0.03, r[2], r[3]], 36),
+            }}
+          >
+            <div className="relative aspect-[16/11] border-b border-white/10">
+              <Image
+                src={p.shot}
+                alt={`${p.name} — screenshot`}
+                fill
+                sizes="(max-width: 1024px) 90vw, 420px"
+                className="object-cover object-top"
+              />
+            </div>
+            <div className="p-4">
+              <span className="u-mono text-[10px] tracking-[0.16em] text-teal">
+                Live now · {p.hrefLabel}
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -166,8 +220,8 @@ function BeatView({ beat }: { beat: Beat }) {
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(60% 40% at 50% 50%, rgba(6,9,20,0.75), rgba(6,9,20,0) 100%)",
-            opacity: win(r, b),
+              "radial-gradient(60% 42% at 50% 50%, rgba(6,9,20,0.78), rgba(6,9,20,0) 100%)",
+            opacity: winR(r),
           }}
         />
         <div className="relative flex flex-col items-center gap-8 sm:flex-row sm:gap-16">
@@ -176,13 +230,10 @@ function BeatView({ beat }: { beat: Beat }) {
               key={st.label}
               className="flex flex-col items-center gap-1 text-center"
               style={{
-                opacity: win(
-                  [r[0] + si * 0.01, r[1] + si * 0.01, r[2], r[3]],
-                  b + si * 0.01,
-                ),
+                opacity: winR([r[0] + si * 0.008, r[1] + si * 0.008, r[2], r[3]]),
                 transform: rise(
-                  [r[0] + si * 0.01, r[1] + 0.015 + si * 0.01, r[2], r[3]],
-                  24,
+                  [r[0] + si * 0.008, r[1] + 0.012 + si * 0.008, r[2], r[3]],
+                  22,
                 ),
               }}
             >
@@ -201,34 +252,36 @@ function BeatView({ beat }: { beat: Beat }) {
 
   if (beat.kind === "steps") {
     return (
-      <div className="absolute inset-0 flex flex-col justify-center gap-10 px-6 sm:px-14">
+      <div className="absolute inset-0 flex flex-col justify-center gap-8 px-6 sm:px-14">
         <div
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(90deg, rgba(6,9,20,0.82), rgba(6,9,20,0.35) 60%, rgba(6,9,20,0.1) 100%)",
-            opacity: win(r, b),
+              "linear-gradient(90deg, rgba(6,9,20,0.84), rgba(6,9,20,0.36) 60%, rgba(6,9,20,0.12) 100%)",
+            opacity: winR(r),
           }}
         />
         <h2
-          className="relative u-poster text-[clamp(2.6rem,9vw,7rem)] text-ink [text-shadow:0_4px_36px_rgba(0,0,0,0.55)]"
-          style={{ opacity: win(r, b), transform: rise(r, 44), filter: soften(r) }}
+          className="relative u-poster text-[clamp(2.4rem,8.5vw,6.5rem)] text-ink [text-shadow:0_4px_36px_rgba(0,0,0,0.55)]"
+          style={{ opacity: winR(r), transform: rise(r, 40), filter: soften(r) }}
         >
           Build it. <em>Run</em> it. Grow it.
         </h2>
-        <div className="relative grid max-w-[1000px] gap-6 sm:grid-cols-3">
+        <div className="relative grid max-w-[1000px] gap-5 sm:grid-cols-3">
           {steps.map((s, si) => (
             <div
               key={s.k}
               className="glass flex flex-col gap-2 rounded-lg p-5"
               style={{
-                opacity: win(
-                  [r[0] + 0.01 + si * 0.012, r[1] + si * 0.012, r[2], r[3]],
-                  b + si * 0.012,
-                ),
+                opacity: winR([
+                  r[0] + 0.008 + si * 0.01,
+                  r[1] + si * 0.01,
+                  r[2],
+                  r[3],
+                ]),
                 transform: rise(
-                  [r[0] + si * 0.012, r[1] + 0.02 + si * 0.012, r[2], r[3]],
-                  28,
+                  [r[0] + si * 0.01, r[1] + 0.016 + si * 0.01, r[2], r[3]],
+                  26,
                 ),
               }}
             >
@@ -248,16 +301,16 @@ function BeatView({ beat }: { beat: Beat }) {
     return (
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 px-6 text-center">
         <div
-          className="absolute left-1/2 top-1/2 h-[86vh] w-[min(900px,96vw)] -translate-x-1/2 -translate-y-1/2"
+          className="absolute left-1/2 top-1/2 h-[88vh] w-[min(920px,96vw)] -translate-x-1/2 -translate-y-1/2"
           style={{
             background:
-              "radial-gradient(44% 40% at 50% 50%, rgba(6,9,20,0.95), rgba(6,9,20,0.6) 60%, rgba(6,9,20,0) 100%)",
+              "radial-gradient(46% 42% at 50% 50%, rgba(6,9,20,0.95), rgba(6,9,20,0.55) 62%, rgba(6,9,20,0) 100%)",
             opacity: inRange(r[0], r[1]),
           }}
         />
         <span
-          className="relative u-mono text-[11px] tracking-[0.3em] text-white/55"
-          style={{ opacity: win(r, b) }}
+          className="relative u-mono text-[11px] tracking-[0.3em] text-white/60"
+          style={{ opacity: winR(r) }}
         >
           Also built for
         </span>
@@ -267,13 +320,15 @@ function BeatView({ beat }: { beat: Beat }) {
               key={w.name}
               className="pointer-events-auto flex flex-col items-center gap-0.5"
               style={{
-                opacity: win(
-                  [r[0] + 0.008 + wi * 0.01, r[1] + wi * 0.01, r[2], r[3]],
-                  b + wi * 0.01,
-                ),
+                opacity: winR([
+                  r[0] + 0.006 + wi * 0.008,
+                  r[1] + wi * 0.008,
+                  r[2],
+                  r[3],
+                ]),
                 transform: rise(
-                  [r[0] + wi * 0.01, r[1] + 0.015 + wi * 0.01, r[2], r[3]],
-                  22,
+                  [r[0] + wi * 0.008, r[1] + 0.012 + wi * 0.008, r[2], r[3]],
+                  20,
                 ),
               }}
             >
@@ -281,7 +336,7 @@ function BeatView({ beat }: { beat: Beat }) {
                 href={w.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="u-poster text-[clamp(1.5rem,4.5vw,2.6rem)] text-ink transition-colors hover:text-teal [text-shadow:0_2px_22px_rgba(0,0,0,0.75)]"
+                className="u-poster text-[clamp(1.5rem,4.6vw,2.7rem)] text-ink transition-colors hover:text-teal [text-shadow:0_2px_22px_rgba(0,0,0,0.8)]"
               >
                 {w.name}
               </a>
@@ -291,15 +346,65 @@ function BeatView({ beat }: { beat: Beat }) {
             </li>
           ))}
         </ul>
-        <span
-          className="relative u-mono text-[10px] tracking-[0.22em] text-faint"
-          style={{ opacity: win([r[0] + 0.04, r[1] + 0.04, r[2], r[3]], b + 0.04) }}
-        >
-          {site.tagline}
-        </span>
       </div>
     );
   }
 
+  if (beat.kind === "community") {
+    return <Community range={r} />;
+  }
+
   return null;
+}
+
+function Community({ range: r }: { range: number[] }) {
+  function suggest(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const idea = (
+      new FormData(e.currentTarget).get("idea") as string
+    )?.trim();
+    if (!idea) return;
+    window.location.href = `mailto:${site.email}?subject=${encodeURIComponent(
+      "A product for the community",
+    )}&body=${encodeURIComponent(idea)}`;
+  }
+  return (
+    <div className="absolute inset-0 flex items-center justify-center px-6">
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(70% 60% at 50% 50%, rgba(6,9,20,0.88), rgba(6,9,20,0.35) 85%, rgba(6,9,20,0.1) 100%)",
+          opacity: winR(r),
+        }}
+      />
+      <div
+        className="pointer-events-auto relative flex w-full max-w-[640px] flex-col gap-5 text-center"
+        style={{ opacity: winR(r), transform: rise(r, 34) }}
+      >
+        <span className="u-mono text-[11px] tracking-[0.3em] text-teal">
+          A product for the people
+        </span>
+        <h2 className="u-poster text-[clamp(2rem,6.5vw,4.2rem)] leading-[0.95] text-ink">
+          What should we build for everyone?
+        </h2>
+        <p className="mx-auto max-w-[48ch] text-[14px] leading-[1.6] text-muted">
+          One thing we make each year isn&apos;t for revenue — a tool the public
+          actually needs, built with the community, kept free. Tell us what it
+          should be.
+        </p>
+        <form onSubmit={suggest} className="mx-auto flex w-full max-w-[520px] flex-col gap-3 sm:flex-row">
+          <input
+            name="idea"
+            required
+            placeholder="A tool that would help people if it existed…"
+            className="w-full rounded-sm border border-white/15 bg-white/[0.05] px-3 py-2.5 text-[14px] text-ink outline-none transition-colors placeholder:text-faint focus:border-teal"
+          />
+          <button type="submit" className="btn btn-primary shrink-0 justify-center">
+            Suggest it
+          </button>
+        </form>
+      </div>
+    </div>
+  );
 }

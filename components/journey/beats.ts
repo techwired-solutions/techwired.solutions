@@ -2,7 +2,8 @@ import { products, work } from "@/lib/site";
 
 /* Positioned by the global scroll progress var `--s` (0..1).
    `range` = [fadeInStart, fullyIn, startFadeOut, fullyOut].
-   Ranges overlap so there is no dead air between beats. */
+   Ranges are tuned so beats overlap slightly — never dead air, never two
+   full-screen statements on top of each other. */
 
 export type Beat =
   | { kind: "tagline"; range: [number, number, number, number]; text: string }
@@ -21,13 +22,14 @@ export type Beat =
     }
   | { kind: "steps"; range: [number, number, number, number] }
   | { kind: "stats"; range: [number, number, number, number] }
-  | { kind: "list"; range: [number, number, number, number] };
+  | { kind: "list"; range: [number, number, number, number] }
+  | { kind: "community"; range: [number, number, number, number] };
 
 export const beats: Beat[] = [
   {
     kind: "tagline",
     range: [0.02, 0.045, 0.085, 0.115],
-    text: "A pulse of light, sent to build something.",
+    text: "We build software — then we run it.",
   },
   {
     kind: "statement",
@@ -37,51 +39,50 @@ export const beats: Beat[] = [
   },
   {
     kind: "statement",
-    range: [0.235, 0.275, 0.32, 0.35],
+    range: [0.235, 0.275, 0.315, 0.345],
     lines: ["We make", "the things", "we believe in"],
     emphasis: "believe",
   },
   {
     kind: "stats",
-    range: [0.345, 0.375, 0.415, 0.44],
+    range: [0.335, 0.365, 0.395, 0.415],
   },
   {
     kind: "product",
-    range: [0.4, 0.435, 0.465, 0.49],
+    range: [0.385, 0.42, 0.47, 0.495],
     index: 0,
     side: "right",
   },
   {
     kind: "product",
-    range: [0.49, 0.525, 0.555, 0.58],
+    range: [0.495, 0.53, 0.575, 0.6],
     index: 1,
     side: "left",
   },
   {
     kind: "product",
-    range: [0.585, 0.62, 0.65, 0.675],
+    range: [0.6, 0.635, 0.675, 0.7],
     index: 2,
     side: "right",
   },
   {
     kind: "steps",
-    range: [0.675, 0.71, 0.75, 0.775],
+    range: [0.695, 0.73, 0.765, 0.79],
   },
   {
     kind: "list",
-    range: [0.775, 0.81, 0.85, 0.878],
+    range: [0.785, 0.815, 0.84, 0.86],
   },
   {
     kind: "statement",
-    range: [0.875, 0.915, 0.965, 0.992],
+    range: [0.85, 0.88, 0.905, 0.925],
     lines: ["Software", "we're proud", "to keep", "our name on"],
     emphasis: "proud",
     align: "left",
   },
   {
-    kind: "tagline",
-    range: [0.965, 0.99, 1, 1],
-    text: "The signal comes to rest.",
+    kind: "community",
+    range: [0.92, 0.95, 0.985, 0.998],
   },
 ];
 
@@ -111,14 +112,14 @@ export const stats = [
 
 export const chapters = [
   { at: 0.0, no: "01", name: "Ignition" },
-  { at: 0.11, no: "02", name: "The Wire" },
-  { at: 0.23, no: "03", name: "Breakthrough" },
-  { at: 0.35, no: "04", name: "Linkypot" },
-  { at: 0.46, no: "05", name: "Krisearch" },
-  { at: 0.57, no: "06", name: "Gharbari" },
-  { at: 0.675, no: "07", name: "The Constellation" },
-  { at: 0.79, no: "08", name: "The Horizon" },
-  { at: 0.9, no: "09", name: "Arrival" },
+  { at: 0.105, no: "02", name: "The Wire" },
+  { at: 0.235, no: "03", name: "Breakthrough" },
+  { at: 0.37, no: "04", name: "Linkypot" },
+  { at: 0.49, no: "05", name: "Krisearch" },
+  { at: 0.595, no: "06", name: "Gharbari" },
+  { at: 0.69, no: "07", name: "The Constellation" },
+  { at: 0.83, no: "08", name: "The Horizon" },
+  { at: 0.915, no: "09", name: "Arrival" },
 ];
 
 export { products, work };
