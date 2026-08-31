@@ -6,9 +6,10 @@ import { BeatLayer } from "./overlays";
 import { Nav } from "./Nav";
 import { Rail } from "./Rail";
 import { Chapters } from "./Chapters";
+import { Community } from "./Community";
 import { Contact } from "./Contact";
 
-const SCROLL_VH = 1700; // scroll distance the film is scrubbed across
+const SCROLL_VH = 1900; // scroll distance the film is scrubbed across
 
 export function Journey() {
   const [still, setStill] = useState(false);
@@ -112,6 +113,7 @@ export function Journey() {
 
       <div ref={spacerRef} style={{ height: `${SCROLL_VH}svh` }} aria-hidden="true" />
 
+      <Community />
       <Contact />
     </>
   );

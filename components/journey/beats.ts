@@ -1,8 +1,8 @@
 import { products, work } from "@/lib/site";
 
 /* Positioned by the global scroll progress var `--s` (0..1).
-   `range` = [fadeInStart, fullyIn, startFadeOut, fullyOut]. Ranges overlap
-   slightly so there is never dead air and never two full-screen headlines. */
+   `range` = [fadeInStart, fullyIn, startFadeOut, fullyOut].
+   Ranges are sequential — one beat finishes before the next begins. */
 
 export type Beat =
   | { kind: "intro"; range: [number, number, number, number] }
@@ -14,33 +14,36 @@ export type Beat =
       align?: "center" | "left";
     }
   | { kind: "pillars"; range: [number, number, number, number] }
+  | { kind: "capability"; range: [number, number, number, number] }
   | {
       kind: "product";
       range: [number, number, number, number];
       index: 0 | 1 | 2;
       side: "left" | "right";
     }
-  | { kind: "stats"; range: [number, number, number, number] }
-  | { kind: "stack"; range: [number, number, number, number] }
-  | { kind: "list"; range: [number, number, number, number] }
-  | { kind: "community"; range: [number, number, number, number] };
+  | { kind: "list"; range: [number, number, number, number] };
 
 export const beats: Beat[] = [
-  { kind: "intro", range: [0.035, 0.07, 0.125, 0.155] },
+  { kind: "intro", range: [0.035, 0.07, 0.12, 0.15] },
+  { kind: "pillars", range: [0.15, 0.175, 0.42, 0.445] },
   {
     kind: "statement",
-    range: [0.15, 0.185, 0.225, 0.25],
-    lines: ["We make", "the things", "we believe in"],
-    emphasis: "believe",
+    range: [0.425, 0.46, 0.5, 0.525],
+    lines: ["Build it.", "Run it.", "Grow it."],
+    emphasis: "Run",
   },
-  { kind: "pillars", range: [0.25, 0.275, 0.47, 0.49] },
-  { kind: "stats", range: [0.485, 0.51, 0.54, 0.56] },
-  { kind: "product", range: [0.555, 0.59, 0.635, 0.66], index: 0, side: "right" },
-  { kind: "product", range: [0.66, 0.695, 0.74, 0.765], index: 1, side: "left" },
-  { kind: "product", range: [0.765, 0.8, 0.845, 0.87], index: 2, side: "right" },
-  { kind: "stack", range: [0.865, 0.89, 0.915, 0.93] },
-  { kind: "list", range: [0.925, 0.945, 0.965, 0.978] },
-  { kind: "community", range: [0.955, 0.975, 0.997, 1.0] },
+  { kind: "capability", range: [0.52, 0.55, 0.615, 0.64] },
+  { kind: "product", range: [0.635, 0.67, 0.715, 0.74], index: 0, side: "right" },
+  { kind: "product", range: [0.74, 0.775, 0.82, 0.845], index: 1, side: "left" },
+  { kind: "product", range: [0.845, 0.88, 0.915, 0.935], index: 2, side: "right" },
+  { kind: "list", range: [0.93, 0.95, 0.968, 0.978] },
+  {
+    kind: "statement",
+    range: [0.972, 0.99, 1.0, 1.0],
+    lines: ["Software we're proud", "to keep our name on"],
+    emphasis: "proud",
+    align: "left",
+  },
 ];
 
 export const pillars = [
@@ -88,13 +91,13 @@ export const stack = [
 export const chapters = [
   { at: 0.0, no: "01", name: "Ignition" },
   { at: 0.1, no: "02", name: "The Wire" },
-  { at: 0.22, no: "03", name: "Breakthrough" },
-  { at: 0.36, no: "04", name: "The Method" },
-  { at: 0.55, no: "05", name: "Linkypot" },
-  { at: 0.66, no: "06", name: "Krisearch" },
-  { at: 0.765, no: "07", name: "Gharbari" },
-  { at: 0.87, no: "08", name: "The Horizon" },
-  { at: 0.955, no: "09", name: "Arrival" },
+  { at: 0.15, no: "03", name: "The Method" },
+  { at: 0.43, no: "04", name: "How We Work" },
+  { at: 0.635, no: "05", name: "Linkypot" },
+  { at: 0.74, no: "06", name: "Krisearch" },
+  { at: 0.845, no: "07", name: "Gharbari" },
+  { at: 0.93, no: "08", name: "The Constellation" },
+  { at: 0.97, no: "09", name: "Arrival" },
 ];
 
 export { products, work };
