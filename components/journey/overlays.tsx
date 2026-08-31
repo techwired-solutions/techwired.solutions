@@ -1,13 +1,20 @@
 "use client";
 
 import Image from "next/image";
-import { beats, steps, stats, products, work, type Beat } from "./beats";
+import {
+  beats,
+  pillars,
+  stats,
+  stack,
+  products,
+  work,
+  type Beat,
+} from "./beats";
 import { site } from "@/lib/site";
 
 /* --- CSS math driven by the global `--s` (0..1) --------------------- */
-const clampN = (a: string, mid: string, b: string) => `clamp(${a}, ${mid}, ${b})`;
 const inRange = (a: number, b: number) =>
-  clampN("0", `calc((var(--s,0) - ${a}) / ${(b - a).toFixed(4)})`, "1");
+  `clamp(0, calc((var(--s,0) - ${a}) / ${(b - a).toFixed(4)}), 1)`;
 const outRange = (c: number, d: number) => `calc(1 - ${inRange(c, d)})`;
 const win = (a: number, b: number, c: number, d: number) =>
   `min(${inRange(a, b)}, ${outRange(c, d)})`;
@@ -16,8 +23,6 @@ const rise = ([a, b, c, d]: number[], px = 42) =>
   `translateY(calc((1 - ${inRange(a, b)}) * ${px}px - ${inRange(c, d)} * ${px}px))`;
 const soften = ([a, b]: number[]) =>
   `blur(calc((1 - ${inRange(a, b)}) * 6px))`;
-
-/* per-line "wipe up from below" — line i of n, staggered inside the fade-in */
 const lineRise = ([a, b]: number[], i: number, n: number) => {
   const span = b - a;
   const lo = a + span * (i / (n + 1));
@@ -53,23 +58,34 @@ function Emph({ line, word }: { line: string; word?: string }) {
 function BeatView({ beat }: { beat: Beat }) {
   const r = beat.range;
 
-  if (beat.kind === "tagline") {
+  if (beat.kind === "intro") {
     return (
       <div className="absolute inset-0 flex items-center justify-center px-6">
         <div
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(42% 28% at 50% 50%, rgba(6,9,20,0.74), rgba(6,9,20,0) 100%)",
+              "radial-gradient(58% 44% at 50% 50%, rgba(6,9,20,0.82), rgba(6,9,20,0) 100%)",
             opacity: winR(r),
           }}
         />
-        <p
-          className="relative max-w-[22ch] text-center text-[clamp(1.2rem,2.8vw,1.9rem)] font-medium leading-snug text-ink [text-shadow:0_2px_30px_rgba(0,0,0,0.7)]"
-          style={{ opacity: winR(r), transform: rise(r, 26) }}
+        <div
+          className="relative flex max-w-[880px] flex-col items-center gap-6 text-center"
+          style={{ opacity: winR(r), transform: rise(r, 34) }}
         >
-          {beat.text}
-        </p>
+          <span className="u-mono text-[11px] tracking-[0.34em] text-teal">
+            Techwired Solutions
+          </span>
+          <p className="text-[clamp(1.5rem,4.4vw,2.9rem)] font-medium leading-[1.16] text-ink [text-shadow:0_2px_30px_rgba(0,0,0,0.6)]">
+            A technology company that designs, builds, and{" "}
+            <span className="text-teal">runs its own software</span>.
+          </p>
+          <p className="max-w-[52ch] text-[14px] leading-[1.65] text-muted">
+            Linkypot, Krisearch and Gharbari are ours — built from problems we
+            felt, and kept running long after launch. A few client projects each
+            year are the exception, not the business.
+          </p>
+        </div>
       </div>
     );
   }
@@ -116,6 +132,77 @@ function BeatView({ beat }: { beat: Beat }) {
     );
   }
 
+  if (beat.kind === "pillars") {
+    const [, B, C] = r;
+    const n = pillars.length;
+    return (
+      <div className="absolute inset-0">
+        {pillars.map((p, i) => {
+          const s0 = B + (C - B) * (i / n);
+          const s1 = B + (C - B) * ((i + 1) / n);
+          const f = (t0: number, t1: number): [number, number] => [
+            s0 + (s1 - s0) * t0,
+            s0 + (s1 - s0) * t1,
+          ];
+          const [wi0, wi1] = f(0, 0.16);
+          const [wo0, wo1] = f(0.34, 0.54);
+          const [pi0, pi1] = f(0.34, 0.56);
+          const [po0, po1] = f(0.84, 1);
+          return (
+            <div key={p.word} className="absolute inset-0">
+              {/* scrim while this pillar is active */}
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "radial-gradient(66% 56% at 50% 50%, rgba(6,9,20,0.86), rgba(6,9,20,0.1) 82%, rgba(6,9,20,0) 100%)",
+                  opacity: `min(${inRange(...f(0, 0.14))}, ${outRange(...f(0.86, 1))})`,
+                }}
+              />
+              {/* the word — pops from depth, rises away */}
+              <div className="absolute inset-0 flex items-center justify-center px-6">
+                <span
+                  className="u-poster text-[clamp(3rem,13vw,10rem)] text-ink [text-shadow:0_4px_44px_rgba(0,0,0,0.5)]"
+                  style={{
+                    opacity: `min(${inRange(wi0, wi1)}, ${outRange(wo0, wo1)})`,
+                    transform: `translateY(calc(-${inRange(wo0, wo1)} * 56vh)) scale(calc(0.72 + ${inRange(wi0, wi1)} * 0.28))`,
+                    filter: `blur(calc((1 - ${inRange(wi0, wi1)}) * 16px))`,
+                    willChange: "transform, opacity, filter",
+                  }}
+                >
+                  {p.word}
+                </span>
+              </div>
+              {/* the paragraph — pops from depth as the word leaves */}
+              <div className="absolute inset-0 flex items-center justify-center px-6">
+                <p
+                  className="max-w-[34ch] text-center text-[clamp(1.05rem,2.5vw,1.6rem)] font-medium leading-[1.4] text-ink [text-shadow:0_2px_28px_rgba(0,0,0,0.7)]"
+                  style={{
+                    opacity: `min(${inRange(pi0, pi1)}, ${outRange(po0, po1)})`,
+                    transform: `translateY(calc(-${inRange(po0, po1)} * 44vh)) scale(calc(0.42 + ${inRange(pi0, pi1)} * 0.58))`,
+                    filter: `blur(calc((1 - ${inRange(pi0, pi1)}) * 18px))`,
+                    willChange: "transform, opacity, filter",
+                  }}
+                >
+                  {p.body}
+                </p>
+              </div>
+              {/* tiny index marker */}
+              <span
+                className="absolute bottom-[14vh] left-1/2 -translate-x-1/2 u-mono text-[10px] tracking-[0.28em] text-teal"
+                style={{
+                  opacity: `min(${inRange(...f(0, 0.2))}, ${outRange(...f(0.8, 1))})`,
+                }}
+              >
+                {String(i + 1).padStart(2, "0")} / {String(n).padStart(2, "0")}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
   if (beat.kind === "product") {
     const p = products[beat.index];
     const left = beat.side === "left";
@@ -125,7 +212,7 @@ function BeatView({ beat }: { beat: Beat }) {
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(180deg, rgba(6,9,20,0.55), rgba(6,9,20,0.78))",
+              "linear-gradient(180deg, rgba(6,9,20,0.58), rgba(6,9,20,0.8))",
             opacity: winR(r),
           }}
         />
@@ -137,7 +224,6 @@ function BeatView({ beat }: { beat: Beat }) {
               : "lg:grid-cols-[1fr_minmax(0,420px)]")
           }
         >
-          {/* text column */}
           <div
             className={
               "flex flex-col gap-5 " + (left ? "lg:order-2" : "lg:order-1")
@@ -182,7 +268,6 @@ function BeatView({ beat }: { beat: Beat }) {
             </a>
           </div>
 
-          {/* card */}
           <div
             className={
               "glass-strong pointer-events-auto relative overflow-hidden rounded-lg shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8)] " +
@@ -250,49 +335,51 @@ function BeatView({ beat }: { beat: Beat }) {
     );
   }
 
-  if (beat.kind === "steps") {
+  if (beat.kind === "stack") {
+    const row = [...stack, ...stack];
     return (
-      <div className="absolute inset-0 flex flex-col justify-center gap-8 px-6 sm:px-14">
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-9">
         <div
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(90deg, rgba(6,9,20,0.84), rgba(6,9,20,0.36) 60%, rgba(6,9,20,0.12) 100%)",
+              "linear-gradient(180deg, rgba(6,9,20,0.68), rgba(6,9,20,0.82))",
             opacity: winR(r),
           }}
         />
-        <h2
-          className="relative u-poster text-[clamp(2.4rem,8.5vw,6.5rem)] text-ink [text-shadow:0_4px_36px_rgba(0,0,0,0.55)]"
-          style={{ opacity: winR(r), transform: rise(r, 40), filter: soften(r) }}
+        <span
+          className="relative u-mono text-[11px] tracking-[0.3em] text-teal"
+          style={{ opacity: winR(r) }}
         >
-          Build it. <em>Run</em> it. Grow it.
-        </h2>
-        <div className="relative grid max-w-[1000px] gap-5 sm:grid-cols-3">
-          {steps.map((s, si) => (
-            <div
-              key={s.k}
-              className="glass flex flex-col gap-2 rounded-lg p-5"
-              style={{
-                opacity: winR([
-                  r[0] + 0.008 + si * 0.01,
-                  r[1] + si * 0.01,
-                  r[2],
-                  r[3],
-                ]),
-                transform: rise(
-                  [r[0] + si * 0.01, r[1] + 0.016 + si * 0.01, r[2], r[3]],
-                  26,
-                ),
-              }}
-            >
-              <span className="u-poster text-[2rem] text-teal/50">{s.k}</span>
-              <h3 className="u-mono text-[12px] tracking-[0.14em] text-ink">
-                {s.title}
-              </h3>
-              <p className="text-[13px] leading-[1.55] text-muted">{s.body}</p>
-            </div>
-          ))}
+          What we build with
+        </span>
+        <div
+          className="relative w-full overflow-hidden"
+          style={{
+            opacity: winR(r),
+            maskImage:
+              "linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent)",
+            WebkitMaskImage:
+              "linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent)",
+          }}
+        >
+          <ul className="marquee-track flex w-max items-center gap-12 whitespace-nowrap pr-12">
+            {row.map((tech, i) => (
+              <li
+                key={`${tech}-${i}`}
+                className="u-poster text-[clamp(1.8rem,5vw,3.4rem)] text-ink/30"
+              >
+                {tech}
+              </li>
+            ))}
+          </ul>
         </div>
+        <span
+          className="relative u-mono text-[10px] tracking-[0.18em] text-faint"
+          style={{ opacity: winR([r[0] + 0.02, r[1] + 0.02, r[2], r[3]]) }}
+        >
+          {site.tagline}
+        </span>
       </div>
     );
   }
@@ -360,9 +447,7 @@ function BeatView({ beat }: { beat: Beat }) {
 function Community({ range: r }: { range: number[] }) {
   function suggest(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const idea = (
-      new FormData(e.currentTarget).get("idea") as string
-    )?.trim();
+    const idea = (new FormData(e.currentTarget).get("idea") as string)?.trim();
     if (!idea) return;
     window.location.href = `mailto:${site.email}?subject=${encodeURIComponent(
       "A product for the community",
@@ -393,7 +478,10 @@ function Community({ range: r }: { range: number[] }) {
           actually needs, built with the community, kept free. Tell us what it
           should be.
         </p>
-        <form onSubmit={suggest} className="mx-auto flex w-full max-w-[520px] flex-col gap-3 sm:flex-row">
+        <form
+          onSubmit={suggest}
+          className="mx-auto flex w-full max-w-[520px] flex-col gap-3 sm:flex-row"
+        >
           <input
             name="idea"
             required

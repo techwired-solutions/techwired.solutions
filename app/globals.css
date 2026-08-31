@@ -167,6 +167,24 @@
   }
 }
 
+/* stack marquee */
+@keyframes tw-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee-track {
+  animation: tw-marquee 34s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+
 /* the fixed film */
 .film {
   position: fixed;
