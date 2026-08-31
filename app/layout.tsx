@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Anton, Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const bricolage = Bricolage_Grotesque({
-  variable: "--font-bricolage",
+const anton = Anton({
+  variable: "--font-anton",
   subsets: ["latin"],
   display: "swap",
-  weight: ["500", "600", "700", "800"],
+  weight: "400",
 });
 
 const hanken = Hanken_Grotesk({
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     template: "%s · Techwired Solutions",
   },
   description:
-    "Techwired Solutions is a technology company that builds and runs its own products — Linkypot, Krisearch, Gharbari — and ships for a few clients each year. Scroll from the void to a landing.",
+    "Techwired Solutions is a technology company that builds and runs its own products — Linkypot, Krisearch, Gharbari — and ships for a few clients each year.",
   keywords: [
     "Techwired Solutions",
     "technology company",
@@ -62,12 +62,11 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body
-        className={`grain ${bricolage.variable} ${hanken.variable} ${jb.variable}`}
-      >
-        {children}
-      </body>
+    <html
+      lang="en"
+      className={`${anton.variable} ${hanken.variable} ${jb.variable}`}
+    >
+      <body className="grain">{children}</body>
     </html>
   );
 }

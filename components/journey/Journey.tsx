@@ -1,31 +1,20 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import type { RefObject } from "react";
+import { useEffect, useRef, useState } from "react";
 import Lenis from "lenis";
-import { scenes } from "./scenes";
-import { Scene } from "./Scene";
+import { BeatLayer } from "./overlays";
+import { Nav } from "./Nav";
 import { Rail } from "./Rail";
-import { Outro } from "./Outro";
+import { Chapters } from "./Chapters";
+import { Contact } from "./Contact";
 
-const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
+const SCROLL_VH = 1150; // scroll distance the film is scrubbed across
 
 export function Journey() {
   const [still, setStill] = useState(false);
-  const [mobile, setMobile] = useState(false);
-
-  const sectionRefs = useMemo<RefObject<HTMLElement | null>[]>(
-    () => scenes.map(() => ({ current: null })),
-    [],
-  );
-  const pinRefs = useMemo<RefObject<HTMLDivElement | null>[]>(
-    () => scenes.map(() => ({ current: null })),
-    [],
-  );
-  const videoRefs = useMemo<RefObject<HTMLVideoElement | null>[]>(
-    () => scenes.map(() => ({ current: null })),
-    [],
-  );
+  const [src, setSrc] = useState("/journey/journey.mp4");
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const spacerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const rm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -35,140 +24,95 @@ export function Journey() {
       }
     ).connection;
     const save = !!conn?.saveData || /(^|-)2g$/.test(conn?.effectiveType ?? "");
-    /* eslint-disable react-hooks/set-state-in-effect -- device capability is only knowable on the client, after mount */
+    const small =
+      window.matchMedia("(max-width: 768px)").matches ||
+      /(^|-)(2g|3g)$/.test(conn?.effectiveType ?? "");
+    /* eslint-disable react-hooks/set-state-in-effect -- client-only capability check */
     setStill(rm || save);
-    setMobile(window.matchMedia("(max-width: 768px)").matches);
+    if (small) setSrc("/journey/journey-480.mp4");
     /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
   useEffect(() => {
-    if (still) return;
+    const root = document.documentElement;
+    const spacer = spacerRef.current;
+    const video = videoRef.current;
 
-    const lenis = new Lenis({
-      autoRaf: false,
-      lerp: 0.11,
-      smoothWheel: true,
-      anchors: true,
-    });
-    (window as unknown as { __lenis?: Lenis }).__lenis = lenis;
+    const lenis = still
+      ? null
+      : new Lenis({ autoRaf: false, lerp: 0.12, smoothWheel: true, anchors: true });
+    if (lenis) (window as unknown as { __lenis?: Lenis }).__lenis = lenis;
+
     let raf = 0;
-    let activeIdx = -1;
     let primed = false;
-
     const prime = () => {
-      if (primed) return;
+      if (primed || !video) return;
       primed = true;
-      videoRefs.forEach((r) => {
-        const v = r.current;
-        if (v) v.play().then(() => v.pause()).catch(() => {});
-      });
+      video.play().then(() => video.pause()).catch(() => {});
     };
-    ["pointerdown", "touchstart", "wheel", "keydown"].forEach((e) =>
-      window.addEventListener(e, prime, { once: true, passive: true }),
-    );
-
-    const ensureLoaded = (i: number) => {
-      const v = videoRefs[i]?.current;
-      if (v && !v.getAttribute("src") && v.dataset.src) {
-        v.src = v.dataset.src;
-        v.preload = "auto";
-        v.load();
-      }
-    };
-    const unload = (i: number) => {
-      const v = videoRefs[i]?.current;
-      if (v && v.getAttribute("src")) {
-        v.removeAttribute("src");
-        v.load();
-      }
-    };
-    const AHEAD = mobile ? 1 : 2;
-    const BEHIND = 1;
-
-    // warm the opening scenes right away
-    [0, 1, 2].forEach((i) => setTimeout(() => ensureLoaded(i), i * 250));
+    const evs = ["pointerdown", "touchstart", "wheel", "keydown"];
+    evs.forEach((e) => window.addEventListener(e, prime, { once: true, passive: true }));
 
     const tick = (t: number) => {
-      lenis.raf(t);
-      const vh = window.innerHeight;
+      lenis?.raf(t);
+      const travel = spacer
+        ? spacer.offsetHeight - window.innerHeight
+        : window.innerHeight * (SCROLL_VH / 100 - 1);
+      const s = travel > 0 ? Math.min(1, Math.max(0, window.scrollY / travel)) : 0;
+      root.style.setProperty("--s", s.toFixed(5));
+      root.style.setProperty("--k", Math.min(1, s / 0.05).toFixed(5));
 
-      let newActive = 0;
-      let activeP = 0;
-      for (let i = 0; i < scenes.length; i++) {
-        const sec = sectionRefs[i]?.current;
-        const pin = pinRefs[i]?.current;
-        if (!sec || !pin) continue;
-        const r = sec.getBoundingClientRect();
-        const span = r.height - vh;
-        const p =
-          span > 0 ? clamp(-r.top / span, 0, 1) : r.top <= 0 ? 1 : 0;
-        pin.style.setProperty("--p", p.toFixed(4));
-        if (r.top <= vh * 0.5 && r.bottom > vh * 0.5) {
-          newActive = i;
-          activeP = p;
-        }
-      }
-
-      // start pulling the next clip in well before we reach it
-      if (activeP > 0.35) ensureLoaded(newActive + 1);
-
-      if (newActive !== activeIdx) {
-        for (let i = 0; i < scenes.length; i++) {
-          if (i >= newActive - BEHIND && i <= newActive + AHEAD) ensureLoaded(i);
-          else unload(i);
-        }
-        activeIdx = newActive;
-      }
-
-      const av = videoRefs[activeIdx]?.current;
-      const sec = sectionRefs[activeIdx]?.current;
-      if (av && sec && av.readyState >= 2) {
-        const r = sec.getBoundingClientRect();
-        const span = r.height - vh;
-        const p = span > 0 ? clamp(-r.top / span, 0, 1) : 1;
-        const dur = Number.isFinite(av.duration) ? av.duration : 8;
-        const target = p * (dur - 0.06);
-        if (Math.abs(av.currentTime - target) > 1 / 24) {
+      if (video && video.readyState >= 2 && Number.isFinite(video.duration)) {
+        const target = s * (video.duration - 0.05);
+        if (Math.abs(video.currentTime - target) > 1 / 24) {
           try {
-            av.currentTime = target;
+            video.currentTime = target;
           } catch {
             /* seek not ready */
           }
         }
       }
-
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
 
     return () => {
       cancelAnimationFrame(raf);
-      lenis.destroy();
+      lenis?.destroy();
       delete (window as unknown as { __lenis?: Lenis }).__lenis;
-      ["pointerdown", "touchstart", "wheel", "keydown"].forEach((e) =>
-        window.removeEventListener(e, prime),
-      );
+      evs.forEach((e) => window.removeEventListener(e, prime));
     };
-  }, [still, mobile, sectionRefs, pinRefs, videoRefs]);
+  }, [still]);
 
   return (
     <>
+      {still ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img className="film" src="/journey/keyframes/05.jpg" alt="" aria-hidden="true" />
+      ) : (
+        <video
+          ref={videoRef}
+          className="film"
+          src={src}
+          poster="/journey/keyframes/00.jpg"
+          muted
+          playsInline
+          preload="auto"
+          tabIndex={-1}
+          aria-hidden="true"
+        />
+      )}
+      <div className="film-scrim" />
+
+      <span id="top" aria-hidden="true" />
+      <Nav />
+      <BeatLayer />
       {!still && <Rail />}
-      <main>
-        {scenes.map((s, i) => (
-          <Scene
-            key={s.id}
-            scene={s}
-            index={i}
-            mobile={mobile}
-            still={still}
-            sectionRef={sectionRefs[i]}
-            pinRef={pinRefs[i]}
-            videoRef={videoRefs[i]}
-          />
-        ))}
-        <Outro />
-      </main>
+      {!still && <Chapters />}
+
+      <div ref={spacerRef} style={{ height: `${SCROLL_VH}svh` }} aria-hidden="true" />
+
+      <Contact />
     </>
   );
 }

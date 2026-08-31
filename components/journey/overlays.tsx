@@ -1,195 +1,305 @@
 "use client";
 
 import Image from "next/image";
-import { products, work, site } from "@/lib/site";
-import type { Overlay } from "./scenes";
+import { beats, steps, stats, products, work, type Beat } from "./beats";
+import { site } from "@/lib/site";
 
-/* Overlays read the scene's scroll progress from the CSS var `--p` (0..1)
-   set on the .scene-pin ancestor — no React re-renders per frame.
-   Ranges below are expressed with CSS clamp(). */
+/* --- CSS math driven by the global `--s` (0..1) --------------------- */
+const inRange = (a: number, b: number) =>
+  `clamp(0, calc((var(--s,0) - ${a}) / ${(b - a).toFixed(4)}), 1)`;
+const outRange = (c: number, d: number) => `calc(1 - ${inRange(c, d)})`;
+const win = ([a, , c, d]: number[], b: number) =>
+  `min(${inRange(a, b)}, ${outRange(c, d)})`;
+const rise = ([a, b, c, d]: number[], px = 42) =>
+  `translateY(calc((1 - ${inRange(a, b)}) * ${px}px - ${inRange(c, d)} * ${px}px))`;
+const soften = ([a, b]: number[]) =>
+  `blur(calc((1 - ${inRange(a, b)}) * 7px))`;
 
-const fadeIn = (from: number, to: number) =>
-  `clamp(0, calc((var(--p) - ${from}) / ${to - from}), 1)`;
-const fadeOut = (from: number, to: number) => `calc(1 - ${fadeIn(from, to)})`;
-const band = (a: number, b: number, c: number, d: number) =>
-  `min(${fadeIn(a, b)}, ${fadeOut(c, d)})`;
+export function BeatLayer() {
+  return (
+    <div className="pointer-events-none fixed inset-0 z-20">
+      {beats.map((beat, i) => (
+        <BeatView key={i} beat={beat} />
+      ))}
+    </div>
+  );
+}
 
-export function SceneOverlay({ overlay }: { overlay: Overlay }) {
-  switch (overlay.kind) {
-    case "intro":
-      return <Intro />;
-    case "telemetry":
-      return <Telemetry />;
-    case "line":
-      return <Line text={overlay.text} align={overlay.align ?? "center"} />;
-    case "product":
-      return <ProductPanel index={overlay.index} side={overlay.side} />;
-    case "constellation":
-      return <Constellation />;
-    default:
-      return null;
+function BeatView({ beat }: { beat: Beat }) {
+  const r = beat.range;
+  const b = r[1];
+
+  if (beat.kind === "tagline") {
+    return (
+      <div className="absolute inset-0 flex items-center justify-center px-6">
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(40% 26% at 50% 50%, rgba(6,9,20,0.72), rgba(6,9,20,0) 100%)",
+            opacity: win(r, b),
+          }}
+        />
+        <p
+          className="relative max-w-[24ch] text-center text-[clamp(1.15rem,2.6vw,1.7rem)] leading-snug text-ink [text-shadow:0_2px_30px_rgba(0,0,0,0.7)]"
+          style={{
+            opacity: win(r, b),
+            transform: rise(r, 30),
+          }}
+        >
+          {beat.text}
+        </p>
+      </div>
+    );
   }
-}
 
-function Intro() {
-  return (
-    <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-6 px-6 text-center">
-      <p
-        className="u-mono text-[12px] tracking-[0.4em] text-teal [text-shadow:0_0_24px_rgba(31,227,203,0.4)]"
-        style={{ opacity: fadeOut(0.55, 0.8) }}
-      >
-        Techwired&nbsp;&nbsp;Solutions
-      </p>
+  if (beat.kind === "statement") {
+    const align = beat.align ?? "center";
+    return (
       <div
-        className="u-mono text-[11px] tracking-[0.3em] text-white/45"
-        style={{ opacity: fadeOut(0.4, 0.65) }}
-      >
-        scroll to begin ↓
-      </div>
-    </div>
-  );
-}
-
-function Telemetry() {
-  return (
-    <div
-      className="pointer-events-none absolute bottom-8 left-6 flex flex-col gap-1 sm:left-10"
-      style={{ opacity: fadeIn(0.05, 0.2) }}
-    >
-      <span className="u-mono text-[10px] tracking-[0.2em] text-teal/70">
-        signal · in transit
-      </span>
-      <span className="u-mono text-[10px] tracking-[0.2em] text-white/35">
-        depth ▸ increasing
-      </span>
-    </div>
-  );
-}
-
-function Line({
-  text,
-  align,
-}: {
-  text: string;
-  align: "center" | "wide";
-}) {
-  return (
-    <div
-      className={
-        "pointer-events-none absolute inset-0 flex items-center px-6 " +
-        (align === "wide" ? "justify-start sm:px-12" : "justify-center text-center")
-      }
-    >
-      <p
         className={
-          "u-display text-ink [text-shadow:0_2px_30px_rgba(0,0,0,0.55)] " +
-          (align === "wide"
-            ? "max-w-[16ch] text-[clamp(2.4rem,8vw,7rem)]"
-            : "max-w-[20ch] text-[clamp(1.9rem,5vw,3.6rem)]")
+          "absolute inset-0 flex flex-col justify-center px-6 sm:px-14 " +
+          (align === "left" ? "items-start" : "items-center text-center")
         }
-        style={{ opacity: band(0.12, 0.28, 0.72, 0.92) }}
       >
-        {text}
-      </p>
-    </div>
-  );
-}
-
-function ProductPanel({
-  index,
-  side,
-}: {
-  index: 0 | 1 | 2;
-  side: "left" | "right";
-}) {
-  const p = products[index];
-  return (
-    <div
-      className={
-        "pointer-events-none absolute inset-0 flex items-center px-5 sm:px-10 " +
-        (side === "right" ? "justify-end" : "justify-start")
-      }
-    >
-      <div
-        className="pointer-events-auto w-full max-w-[380px] overflow-hidden rounded-lg border border-teal/25 bg-void/85 shadow-[0_30px_80px_-10px_rgba(0,0,0,0.7)] backdrop-blur-xl"
-        style={{
-          opacity: band(0.32, 0.48, 0.86, 0.99),
-          transform: `translateY(calc(${fadeOut(0.32, 0.5)} * 26px))`,
-        }}
-      >
-        <div className="relative aspect-[16/10] border-b border-white/10">
-          <Image
-            src={p.shot}
-            alt={`${p.name} — screenshot`}
-            fill
-            sizes="380px"
-            className="object-cover object-top"
-          />
-        </div>
-        <div className="flex flex-col gap-2.5 p-5">
-          <span className="u-mono text-[10px] tracking-[0.18em] text-teal">
-            {p.tag}
-          </span>
-          <h3 className="u-display text-[24px] text-ink">{p.name}</h3>
-          <p className="text-[13.5px] leading-[1.55] text-muted">{p.blurb}</p>
-          <a
-            href={p.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-1 inline-flex w-fit items-center gap-1.5 border-b border-teal pb-0.5 text-[13px] font-medium text-teal transition-opacity hover:opacity-70"
-          >
-            {p.hrefLabel} ↗
-          </a>
-        </div>
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              align === "left"
+                ? "linear-gradient(90deg, rgba(6,9,20,0.86), rgba(6,9,20,0.3) 52%, rgba(6,9,20,0) 82%)"
+                : "radial-gradient(62% 50% at 50% 50%, rgba(6,9,20,0.82), rgba(6,9,20,0.1) 78%, rgba(6,9,20,0) 100%)",
+            opacity: win(r, b),
+          }}
+        />
+        <h2
+          className="relative u-poster text-[clamp(3rem,12.5vw,10rem)] text-ink [text-shadow:0_4px_40px_rgba(0,0,0,0.55)]"
+          style={{ opacity: win(r, b), transform: rise(r, 50), filter: soften(r) }}
+        >
+          {beat.lines.map((line, li) => (
+            <span key={li} className="block">
+              {beat.emphasis && line.toLowerCase().includes(beat.emphasis) ? (
+                <>
+                  {line.split(new RegExp(`(${beat.emphasis})`, "i")).map((chunk, ci) =>
+                    chunk.toLowerCase() === beat.emphasis!.toLowerCase() ? (
+                      <em key={ci}>{chunk}</em>
+                    ) : (
+                      <span key={ci}>{chunk}</span>
+                    ),
+                  )}
+                </>
+              ) : (
+                line
+              )}
+            </span>
+          ))}
+        </h2>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
-function Constellation() {
-  return (
-    <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-6 px-6 text-center">
+  if (beat.kind === "product") {
+    const p = products[beat.index];
+    const onLeft = beat.side === "left";
+    return (
       <div
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[80vh] w-[min(820px,96vw)] -translate-x-1/2 -translate-y-1/2"
-        style={{
-          background:
-            "radial-gradient(46% 42% at 50% 50%, rgba(6,9,20,0.94), rgba(6,9,20,0.55) 62%, rgba(6,9,20,0) 100%)",
-          opacity: fadeIn(0.08, 0.25),
-        }}
-      />
-      <span
-        className="relative u-mono text-[11px] tracking-[0.28em] text-white/60"
-        style={{ opacity: fadeIn(0.05, 0.2) }}
+        className={
+          "absolute inset-0 flex flex-col justify-center gap-6 px-6 sm:px-14 " +
+          (onLeft ? "items-start" : "items-end")
+        }
       >
-        also built for
-      </span>
-      <ul className="relative flex flex-col items-center gap-3">
-        {work.map((w, i) => (
-          <li
-            key={w.name}
-            className="pointer-events-auto flex flex-col items-center gap-0.5"
-            style={{ opacity: fadeIn(0.16 + i * 0.11, 0.3 + i * 0.11) }}
-          >
+        <div
+          className="absolute inset-0"
+          style={{
+            background: onLeft
+              ? "linear-gradient(90deg, rgba(6,9,20,0.8), rgba(6,9,20,0.2) 46%, rgba(6,9,20,0) 70%)"
+              : "linear-gradient(270deg, rgba(6,9,20,0.8), rgba(6,9,20,0.2) 46%, rgba(6,9,20,0) 70%)",
+            opacity: win(r, b),
+          }}
+        />
+        <span
+          className="relative u-poster text-[clamp(2.6rem,9vw,7rem)] leading-[0.82] text-ink [text-shadow:0_4px_36px_rgba(0,0,0,0.7)]"
+          style={{ opacity: win(r, b), transform: rise(r, 44), filter: soften(r) }}
+        >
+          {p.name}
+        </span>
+
+        <div
+          className="glass-strong pointer-events-auto relative w-full max-w-[420px] overflow-hidden rounded-lg shadow-[0_40px_100px_-20px_rgba(0,0,0,0.75)]"
+          style={{
+            opacity: win([r[0] + 0.02, r[1] + 0.02, r[2], r[3]], b + 0.02),
+            transform: rise([r[0] + 0.02, r[1] + 0.03, r[2], r[3]], 34),
+          }}
+        >
+          <div className="relative aspect-[16/10] border-b border-white/10">
+            <Image
+              src={p.shot}
+              alt={`${p.name} — screenshot`}
+              fill
+              sizes="420px"
+              className="object-cover object-top"
+            />
+          </div>
+          <div className="flex flex-col gap-3 p-5">
+            <span className="u-mono text-[10px] tracking-[0.18em] text-teal">
+              {p.tag}
+            </span>
+            <p className="text-[14px] leading-[1.55] text-muted">{p.blurb}</p>
             <a
-              href={w.href}
+              href={p.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="u-display text-[clamp(1.2rem,3.2vw,1.9rem)] text-ink transition-colors hover:text-teal [text-shadow:0_2px_20px_rgba(0,0,0,0.7)]"
+              className="link-sweep mt-1 w-fit u-mono text-[11px] tracking-[0.12em]"
             >
-              {w.name}
+              {p.hrefLabel} ↗
             </a>
-            <span className="u-mono text-[9px] tracking-[0.14em] text-muted">
-              {w.tag}
-            </span>
-          </li>
-        ))}
-      </ul>
-      <span
-        className="relative u-mono text-[10px] tracking-[0.2em] text-faint"
-        style={{ opacity: fadeIn(0.7, 0.85) }}
-      >
-        {site.tagline}
-      </span>
-    </div>
-  );
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (beat.kind === "stats") {
+    return (
+      <div className="absolute inset-0 flex items-center justify-center px-6">
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(60% 40% at 50% 50%, rgba(6,9,20,0.75), rgba(6,9,20,0) 100%)",
+            opacity: win(r, b),
+          }}
+        />
+        <div className="relative flex flex-col items-center gap-8 sm:flex-row sm:gap-16">
+          {stats.map((st, si) => (
+            <div
+              key={st.label}
+              className="flex flex-col items-center gap-1 text-center"
+              style={{
+                opacity: win(
+                  [r[0] + si * 0.01, r[1] + si * 0.01, r[2], r[3]],
+                  b + si * 0.01,
+                ),
+                transform: rise(
+                  [r[0] + si * 0.01, r[1] + 0.015 + si * 0.01, r[2], r[3]],
+                  24,
+                ),
+              }}
+            >
+              <span className="u-poster text-[clamp(3rem,8vw,6rem)] text-ink [text-shadow:0_2px_24px_rgba(0,0,0,0.6)]">
+                {st.n}
+              </span>
+              <span className="u-mono text-[10px] tracking-[0.16em] text-teal">
+                {st.label}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (beat.kind === "steps") {
+    return (
+      <div className="absolute inset-0 flex flex-col justify-center gap-10 px-6 sm:px-14">
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(90deg, rgba(6,9,20,0.82), rgba(6,9,20,0.35) 60%, rgba(6,9,20,0.1) 100%)",
+            opacity: win(r, b),
+          }}
+        />
+        <h2
+          className="relative u-poster text-[clamp(2.6rem,9vw,7rem)] text-ink [text-shadow:0_4px_36px_rgba(0,0,0,0.55)]"
+          style={{ opacity: win(r, b), transform: rise(r, 44), filter: soften(r) }}
+        >
+          Build it. <em>Run</em> it. Grow it.
+        </h2>
+        <div className="relative grid max-w-[1000px] gap-6 sm:grid-cols-3">
+          {steps.map((s, si) => (
+            <div
+              key={s.k}
+              className="glass flex flex-col gap-2 rounded-lg p-5"
+              style={{
+                opacity: win(
+                  [r[0] + 0.01 + si * 0.012, r[1] + si * 0.012, r[2], r[3]],
+                  b + si * 0.012,
+                ),
+                transform: rise(
+                  [r[0] + si * 0.012, r[1] + 0.02 + si * 0.012, r[2], r[3]],
+                  28,
+                ),
+              }}
+            >
+              <span className="u-poster text-[2rem] text-teal/50">{s.k}</span>
+              <h3 className="u-mono text-[12px] tracking-[0.14em] text-ink">
+                {s.title}
+              </h3>
+              <p className="text-[13px] leading-[1.55] text-muted">{s.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (beat.kind === "list") {
+    return (
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 px-6 text-center">
+        <div
+          className="absolute left-1/2 top-1/2 h-[86vh] w-[min(900px,96vw)] -translate-x-1/2 -translate-y-1/2"
+          style={{
+            background:
+              "radial-gradient(44% 40% at 50% 50%, rgba(6,9,20,0.95), rgba(6,9,20,0.6) 60%, rgba(6,9,20,0) 100%)",
+            opacity: inRange(r[0], r[1]),
+          }}
+        />
+        <span
+          className="relative u-mono text-[11px] tracking-[0.3em] text-white/55"
+          style={{ opacity: win(r, b) }}
+        >
+          Also built for
+        </span>
+        <ul className="relative flex flex-col items-center gap-3">
+          {work.map((w, wi) => (
+            <li
+              key={w.name}
+              className="pointer-events-auto flex flex-col items-center gap-0.5"
+              style={{
+                opacity: win(
+                  [r[0] + 0.008 + wi * 0.01, r[1] + wi * 0.01, r[2], r[3]],
+                  b + wi * 0.01,
+                ),
+                transform: rise(
+                  [r[0] + wi * 0.01, r[1] + 0.015 + wi * 0.01, r[2], r[3]],
+                  22,
+                ),
+              }}
+            >
+              <a
+                href={w.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="u-poster text-[clamp(1.5rem,4.5vw,2.6rem)] text-ink transition-colors hover:text-teal [text-shadow:0_2px_22px_rgba(0,0,0,0.75)]"
+              >
+                {w.name}
+              </a>
+              <span className="u-mono text-[9px] tracking-[0.14em] text-muted">
+                {w.tag}
+              </span>
+            </li>
+          ))}
+        </ul>
+        <span
+          className="relative u-mono text-[10px] tracking-[0.22em] text-faint"
+          style={{ opacity: win([r[0] + 0.04, r[1] + 0.04, r[2], r[3]], b + 0.04) }}
+        >
+          {site.tagline}
+        </span>
+      </div>
+    );
+  }
+
+  return null;
 }
