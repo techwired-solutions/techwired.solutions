@@ -4,6 +4,7 @@ import Image from "next/image";
 import {
   beats,
   pillars,
+  steps,
   stats,
   stack,
   products,
@@ -144,34 +145,34 @@ function BeatView({ beat }: { beat: Beat }) {
           return (
             <div
               key={p.word}
-              className="absolute inset-0 flex flex-col items-center justify-center gap-6 px-6 text-center sm:gap-10"
+              className="absolute inset-0 flex flex-col items-center justify-center gap-5 px-6 text-center sm:gap-7"
             >
               <div
                 className="absolute inset-0"
                 style={{
                   background:
                     "radial-gradient(66% 58% at 50% 50%, rgba(6,9,20,0.88), rgba(6,9,20,0.12) 82%, rgba(6,9,20,0) 100%)",
-                  opacity: `min(${L(0, 0.1)}, calc(1 - ${L(0.9, 1)}))`,
+                  opacity: `min(${L(0, 0.12)}, calc(1 - ${L(0.82, 0.98)}))`,
                 }}
               />
-              {/* WORD — holds at centre, then rises up and fades away */}
+              {/* WORD + PARAGRAPH appear together; then the word rises away
+                 and fades while the paragraph fades out in place. */}
               <span
                 className="relative u-poster text-[clamp(3rem,13vw,10rem)] leading-none text-ink [text-shadow:0_4px_44px_rgba(0,0,0,0.5)]"
                 style={{
-                  opacity: `min(${L(0, 0.08)}, calc(1 - ${L(0.5, 0.8)}))`,
-                  transform: `translateY(calc(${L(0.26, 0.82)} * -32vh))`,
+                  opacity: `min(${L(0, 0.14)}, calc(1 - ${L(0.44, 0.66)}))`,
+                  transform: `translateY(calc(${L(0.4, 0.85)} * -34vh))`,
                   willChange: "transform, opacity",
                 }}
               >
                 {p.word}
               </span>
-              {/* PARAGRAPH — pops in from depth, below where the word was */}
               <p
                 className="relative max-w-[36ch] text-[clamp(1.05rem,2.5vw,1.55rem)] font-medium leading-[1.4] text-ink [text-shadow:0_2px_28px_rgba(0,0,0,0.72)]"
                 style={{
-                  opacity: `min(${L(0.3, 0.52)}, calc(1 - ${L(0.85, 1)}))`,
-                  transform: `translateY(calc((1 - ${L(0.3, 0.54)}) * 8vh + ${L(0.85, 1)} * -20vh)) scale(calc(0.55 + ${L(0.3, 0.54)} * 0.45))`,
-                  filter: `blur(calc((1 - ${L(0.3, 0.52)}) * 16px))`,
+                  opacity: `min(${L(0.03, 0.2)}, calc(1 - ${L(0.6, 0.82)}))`,
+                  transform: `translateY(calc((1 - ${L(0.03, 0.26)}) * 5vh)) scale(calc(0.72 + ${L(0.03, 0.24)} * 0.28))`,
+                  filter: `blur(calc((1 - ${L(0.03, 0.2)}) * 12px))`,
                   willChange: "transform, opacity, filter",
                 }}
               >
@@ -179,13 +180,60 @@ function BeatView({ beat }: { beat: Beat }) {
               </p>
               <span
                 className="relative u-mono text-[10px] tracking-[0.28em] text-teal"
-                style={{ opacity: `min(${L(0, 0.16)}, calc(1 - ${L(0.86, 1)}))` }}
+                style={{ opacity: `min(${L(0, 0.16)}, calc(1 - ${L(0.78, 0.96)}))` }}
               >
                 {String(i + 1).padStart(2, "0")} / {String(n).padStart(2, "0")}
               </span>
             </div>
           );
         })}
+      </div>
+    );
+  }
+
+  if (beat.kind === "steps") {
+    return (
+      <div className="absolute inset-0 flex flex-col justify-center gap-8 px-6 sm:px-14">
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(90deg, rgba(6,9,20,0.84), rgba(6,9,20,0.36) 60%, rgba(6,9,20,0.12) 100%)",
+            opacity: winR(r),
+          }}
+        />
+        <h2
+          className="relative u-poster text-[clamp(2.4rem,8.5vw,6.5rem)] text-ink [text-shadow:0_4px_36px_rgba(0,0,0,0.55)]"
+          style={{ opacity: winR(r), transform: rise(r, 40), filter: soften(r) }}
+        >
+          Build it. <em>Run</em> it. Grow it.
+        </h2>
+        <div className="relative grid max-w-[1000px] gap-5 sm:grid-cols-3">
+          {steps.map((s, si) => (
+            <div
+              key={s.k}
+              className="glass flex flex-col gap-2 rounded-lg p-5"
+              style={{
+                opacity: winR([
+                  r[0] + 0.008 + si * 0.01,
+                  r[1] + si * 0.01,
+                  r[2],
+                  r[3],
+                ]),
+                transform: rise(
+                  [r[0] + si * 0.01, r[1] + 0.016 + si * 0.01, r[2], r[3]],
+                  26,
+                ),
+              }}
+            >
+              <span className="u-poster text-[2rem] text-teal/50">{s.k}</span>
+              <h3 className="u-mono text-[12px] tracking-[0.14em] text-ink">
+                {s.title}
+              </h3>
+              <p className="text-[13px] leading-[1.55] text-muted">{s.body}</p>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
